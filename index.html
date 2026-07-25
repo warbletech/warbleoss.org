@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Warble OSS — Kubernetes agent ops, open source</title>
+  <meta name="description" content="Warble OSS: ShrikeOps, Heron Ops, and Starling EX Community Edition. Scan, observe, remediate Kubernetes with MCP agents." />
+  <link rel="canonical" href="https://warbleoss.org/" />
+  <meta property="og:title" content="Warble OSS" />
+  <meta property="og:description" content="Open flock of Kubernetes agent ops — ShrikeOps, Heron Ops, Starling EX CE." />
+  <meta property="og:url" content="https://warbleoss.org/" />
+  <link rel="icon" href="assets/heron-ops-logo.jpg" />
+  <style>
+    :root {
+      --ink: #0f172a;
+      --muted: #475569;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --heron: #1e3a5f;
+      --shrike: #9b1b30;
+      --accent: #0ea5e9;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.55;
+    }
+    a { color: var(--heron); }
+    header {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    nav a {
+      margin-left: 1rem;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    nav a:hover { color: var(--ink); }
+    .hero {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 2rem;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin: 0 0 1rem;
+    }
+    .hero p.lead {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 40rem;
+      margin: 0 0 1.75rem;
+    }
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.7rem 1.15rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .btn-primary {
+      background: var(--heron);
+      color: #fff;
+    }
+    .btn-primary:hover { filter: brightness(1.08); color: #fff; }
+    .btn-demo {
+      background: #ecfeff;
+      color: #0e7490;
+      border: 1px solid #a5f3fc;
+    }
+    .btn-ghost {
+      background: var(--card);
+      color: var(--ink);
+      border: 1px solid var(--border);
+    }
+    .birds {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 3rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 1.35rem;
+      box-shadow: 0 1px 2px rgb(15 23 42 / 4%);
+    }
+    .card img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      border-radius: 0.5rem;
+      background: #fff;
+      margin-bottom: 0.75rem;
+    }
+    .card h2 {
+      margin: 0 0 0.4rem;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+    }
+    .card p { margin: 0 0 0.75rem; color: var(--muted); font-size: 0.95rem; }
+    .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.2rem 0.45rem;
+      border-radius: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .tag-shrike { background: #fef2f2; color: var(--shrike); }
+    .tag-heron { background: #eef2ff; color: var(--heron); }
+    .tag-starling { background: #f0f9ff; color: #0369a1; }
+    section.block {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+    section.block h2 {
+      font-size: 1.45rem;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.75rem;
+    }
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 1rem 1.15rem;
+      border-radius: 0.65rem;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .try-box {
+      border: 1px solid #a5f3fc;
+      background: linear-gradient(180deg, #ecfeff 0%, #fff 100%);
+      border-radius: 0.85rem;
+      padding: 1.35rem 1.5rem;
+    }
+    .try-box h2 { margin-top: 0; }
+    footer {
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+      padding: 2rem 1.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo" href="/">Warble OSS</a>
+    <nav>
+      <a href="#flock">Flock</a>
+      <a href="#install">Install</a>
+      <a href="#try">Try MCP</a>
+      <a href="https://github.com/warble-tech/warble-army">GitHub</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Open-source Kubernetes agent ops</h1>
+    <p class="lead">
+      Scan with <strong>ShrikeOps</strong>. Observe with <strong>Heron Ops</strong>.
+      Coordinate with <strong>Starling EX Community Edition</strong>.
+      Birds of a feather — self-hosted, no lock-in.
+    </p>
+    <div class="cta">
+      <a class="btn btn-demo" href="https://starling-ex.frakma.io/lite/mcp" id="try-mcp">Try MCP live →</a>
+      <a class="btn btn-primary" href="https://github.com/warble-tech/warble-army">Get the army</a>
+      <a class="btn btn-ghost" href="#install">Helm install</a>
+    </div>
+  </section>
+
+  <section class="birds" id="flock">
+    <article class="card">
+      <span class="tag tag-shrike">Scanner</span>
+      <img src="assets/shrike-ops-logo.jpg" alt="ShrikeOps logo" width="72" height="72" />
+      <h2>ShrikeOps</h2>
+      <p>Hunts misconfigurations, CVEs, and deprecated APIs. Impales findings on a scored report before they hit production.</p>
+      <a href="https://github.com/warble-tech/shrikeops">github.com/warble-tech/shrikeops</a>
+    </article>
+    <article class="card">
+      <span class="tag tag-heron">MCP</span>
+      <img src="assets/heron-ops-logo.jpg" alt="Heron Ops logo" width="72" height="72" />
+      <h2>Heron Ops</h2>
+      <p>Kubernetes MCP server for live pods, logs, events, and metrics. Formerly SteadyHelm. Calm observation, precise tools.</p>
+      <a href="https://github.com/warble-tech/heron-ops">github.com/warble-tech/heron-ops</a>
+    </article>
+    <article class="card">
+      <span class="tag tag-starling">CE</span>
+      <img src="assets/heron-ops-logo.jpg" alt="Starling EX CE" width="72" height="72" style="opacity:0.9" />
+      <h2>Starling EX CE</h2>
+      <p>Community Edition package: Starling Lite facade + Heron Ops + ShrikeOps tools, one Helm chart. Self-host the flock.</p>
+      <a href="https://github.com/warble-tech/warble-army/tree/main/charts/starling-ex-ce">charts/starling-ex-ce</a>
+    </article>
+  </section>
+
+  <section class="block" id="try">
+    <div class="try-box">
+      <h2>Try MCP now</h2>
+      <p style="color:var(--muted);margin-top:0">
+        Public Starling Lite endpoint (readonly) on the FRAKMA demo host:
+      </p>
+      <p><code>https://starling-ex.frakma.io/lite/mcp</code></p>
+      <pre>curl -sS -X POST https://starling-ex.frakma.io/lite/mcp \
+  -H 'Content-Type: application/json' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'</pre>
+      <p style="margin-bottom:0">
+        <a class="btn btn-demo" href="https://starling-ex.frakma.io/lite/health">Health check</a>
+        <a class="btn btn-primary" href="https://starling-ex.frakma.io/lite/mcp">Open MCP URL</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="block" id="install">
+    <h2>Install Community Edition</h2>
+    <p style="color:var(--muted)">Helm chart from the army umbrella repo:</p>
+    <pre>git clone --recurse-submodules https://github.com/warble-tech/warble-army.git
+cd warble-army
+
+helm upgrade --install starling-ex-ce ./charts/starling-ex-ce \
+  --namespace warble-army --create-namespace
+
+kubectl -n warble-army port-forward svc/starling-ex-ce 8822:8822
+curl -sS http://127.0.0.1:8822/health</pre>
+    <p style="color:var(--muted)">
+      Docs: <a href="https://github.com/warble-tech/warble-army/blob/main/docs/STARLING_EX_CE.md">Starling EX CE plan</a>
+      · <a href="https://github.com/warble-tech/warble-army/blob/main/docs/BRAND.md">Flock brand map</a>
+    </p>
+  </section>
+
+  <section class="block">
+    <h2>Commercial</h2>
+    <p style="color:var(--muted)">
+      Need multi-tenant SaaS, GitHub App, or managed FRAKMA?
+      CE stays free and self-hosted.
+      → <a href="https://warblecloud.com">warblecloud.com</a>
+      · <a href="https://frakma.io/enterprise">frakma.io/enterprise</a>
+    </p>
+  </section>
+
+  <footer>
+    © ChirpStack LLP / Warble · Open source under Apache-2.0 (per component)
+    · <a href="https://github.com/warble-tech/warble-army">warble-army</a>
+    · Demo MCP: <a href="https://starling-ex.frakma.io/lite/mcp">starling-ex.frakma.io/lite/mcp</a>
+  </footer>
+</body>
+</html>
