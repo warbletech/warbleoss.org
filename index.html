@@ -4,12 +4,16 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Warble OSS — Kubernetes agent ops, open source</title>
-  <meta name="description" content="Warble OSS: ShrikeOps, Heron Ops, and Starling EX Community Edition. Scan, observe, remediate Kubernetes with MCP agents." />
+  <meta name="description" content="Warble OSS: ShrikeOps, Heron Ops, and Starling EX Community. Scan, observe, remediate Kubernetes with MCP agents. Planning CNCF donation; Frakma-X is our Linux Foundation wing." />
   <link rel="canonical" href="https://warbleoss.org/" />
   <meta property="og:title" content="Warble OSS" />
-  <meta property="og:description" content="Open flock of Kubernetes agent ops — ShrikeOps, Heron Ops, Starling EX CE." />
+  <meta property="og:description" content="Open flock of Kubernetes agent ops — ShrikeOps, Heron Ops, Starling EX Community. Planned CNCF path · Frakma-X LF wing." />
   <meta property="og:url" content="https://warbleoss.org/" />
+  <meta property="og:type" content="website" />
   <link rel="icon" href="assets/heron-ops-logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --ink: #0f172a;
@@ -20,6 +24,8 @@
       --shrike: #9b1b30;
       --accent: #0ea5e9;
       --border: #e2e8f0;
+      --ok: #047857;
+      --warn: #b45309;
     }
     * { box-sizing: border-box; }
     body {
@@ -38,6 +44,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      flex-wrap: wrap;
     }
     .logo {
       font-weight: 700;
@@ -46,6 +53,12 @@
       text-decoration: none;
       color: var(--ink);
     }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0;
+      align-items: center;
+    }
     nav a {
       margin-left: 1rem;
       text-decoration: none;
@@ -53,6 +66,15 @@
       font-size: 0.95rem;
     }
     nav a:hover { color: var(--ink); }
+    .banner {
+      background: linear-gradient(90deg, #eef2ff 0%, #ecfeff 50%, #f0fdf4 100%);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 0.55rem 1rem;
+    }
+    .banner strong { color: var(--ink); }
     .hero {
       max-width: 1100px;
       margin: 0 auto;
@@ -67,9 +89,26 @@
     .hero p.lead {
       font-size: 1.2rem;
       color: var(--muted);
-      max-width: 40rem;
+      max-width: 42rem;
       margin: 0 0 1.75rem;
     }
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--muted);
+    }
+    .pill-cncf { border-color: #c7d2fe; background: #eef2ff; color: #3730a3; }
+    .pill-lf { border-color: #bbf7d0; background: #f0fdf4; color: #166534; }
     .cta {
       display: flex;
       flex-wrap: wrap;
@@ -121,12 +160,13 @@
       background: #fff;
       margin-bottom: 0.75rem;
     }
-    .card h2 {
+    .card h2, .card h3 {
       margin: 0 0 0.4rem;
       font-size: 1.2rem;
       letter-spacing: -0.02em;
     }
     .card p { margin: 0 0 0.75rem; color: var(--muted); font-size: 0.95rem; }
+    .card .link-row { font-size: 0.9rem; }
     .tag {
       display: inline-block;
       font-size: 0.7rem;
@@ -140,6 +180,8 @@
     .tag-shrike { background: #fef2f2; color: var(--shrike); }
     .tag-heron { background: #eef2ff; color: var(--heron); }
     .tag-starling { background: #f0f9ff; color: #0369a1; }
+    .tag-easy { background: #ecfdf5; color: var(--ok); }
+    .tag-platform { background: #fff7ed; color: var(--warn); }
     section.block {
       max-width: 1100px;
       margin: 0 auto;
@@ -149,6 +191,11 @@
       font-size: 1.45rem;
       letter-spacing: -0.02em;
       margin: 0 0 0.75rem;
+    }
+    section.block > p.lede {
+      color: var(--muted);
+      max-width: 40rem;
+      margin: 0 0 1.25rem;
     }
     pre {
       background: #0f172a;
@@ -167,6 +214,43 @@
       padding: 1.35rem 1.5rem;
     }
     .try-box h2 { margin-top: 0; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    table.simple {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      overflow: hidden;
+    }
+    table.simple th,
+    table.simple td {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    table.simple th {
+      background: #f1f5f9;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+    }
+    table.simple tr:last-child td { border-bottom: none; }
+    .muted { color: var(--muted); }
+    .note {
+      font-size: 0.9rem;
+      color: var(--muted);
+      border-left: 3px solid var(--accent);
+      padding: 0.5rem 0 0.5rem 0.9rem;
+      margin: 1rem 0 0;
+    }
     footer {
       border-top: 1px solid var(--border);
       margin-top: 1rem;
@@ -175,15 +259,25 @@
       font-size: 0.9rem;
       text-align: center;
     }
+    footer a { margin: 0 0.25rem; }
   </style>
 </head>
 <body>
+  <div class="banner">
+    <strong>Starling EX Community</strong> — planning <strong>CNCF</strong> donation (Sandbox path)
+    · <strong>Frakma-X</strong> — Linux Foundation wing for platform / LLMOps
+  </div>
+
   <header>
     <a class="logo" href="/">Warble OSS</a>
     <nav>
       <a href="#flock">Flock</a>
+      <a href="#start">Easy start</a>
       <a href="#install">Install</a>
       <a href="#try">Try MCP</a>
+      <a href="#foundations">Foundations</a>
+      <a href="#community">Community</a>
+      <a href="#support">Support</a>
       <a href="https://github.com/warble-tech/warble-army">GitHub</a>
     </nav>
   </header>
@@ -192,13 +286,18 @@
     <h1>Open-source Kubernetes agent ops</h1>
     <p class="lead">
       Scan with <strong>ShrikeOps</strong>. Observe with <strong>Heron Ops</strong>.
-      Coordinate with <strong>Starling EX Community Edition</strong>.
-      Birds of a feather — self-hosted, no lock-in.
+      Coordinate with <strong>Starling EX Community</strong>.
+      Birds of a feather — self-hosted, no lock-in. Adapt and extend the flock under Apache-2.0.
     </p>
+    <div class="pills" aria-label="Foundation status">
+      <span class="pill pill-cncf">CNCF Sandbox — application draft</span>
+      <span class="pill pill-lf">Frakma-X · LF wing (forming)</span>
+      <span class="pill">Self-host CE · no phone-home</span>
+    </div>
     <div class="cta">
-      <a class="btn btn-demo" href="https://starling-ex.frakma.io/lite/mcp" id="try-mcp">Try MCP live →</a>
+      <a class="btn btn-demo" href="https://starling-ex.frakma.io/lite/mcp">Try MCP live →</a>
       <a class="btn btn-primary" href="https://github.com/warble-tech/warble-army">Get the army</a>
-      <a class="btn btn-ghost" href="#install">Helm install</a>
+      <a class="btn btn-ghost" href="#start">Easiest first PR</a>
     </div>
   </section>
 
@@ -208,29 +307,75 @@
       <img src="assets/shrike-ops-logo.jpg" alt="ShrikeOps logo" width="72" height="72" />
       <h2>ShrikeOps</h2>
       <p>Hunts misconfigurations, CVEs, and deprecated APIs. Impales findings on a scored report before they hit production.</p>
-      <a href="https://github.com/warble-tech/shrikeops">github.com/warble-tech/shrikeops</a>
+      <p class="link-row"><a href="https://github.com/warble-tech/shrikeops">github.com/warble-tech/shrikeops</a></p>
     </article>
     <article class="card">
       <span class="tag tag-heron">MCP</span>
       <img src="assets/heron-ops-logo.jpg" alt="Heron Ops logo" width="72" height="72" />
       <h2>Heron Ops</h2>
-      <p>Kubernetes MCP server for live pods, logs, events, and metrics. Formerly SteadyHelm. Calm observation, precise tools.</p>
-      <a href="https://github.com/warble-tech/heron-ops">github.com/warble-tech/heron-ops</a>
+      <p>Kubernetes MCP server for live pods, logs, events, and metrics. Formerly SteadyHelm. Calm observation, precise tools for any agent IDE.</p>
+      <p class="link-row"><a href="https://github.com/warble-tech/heron-ops">github.com/warble-tech/heron-ops</a></p>
     </article>
     <article class="card">
       <span class="tag tag-starling">CE</span>
-      <img src="assets/heron-ops-logo.jpg" alt="Starling EX CE" width="72" height="72" style="opacity:0.9" />
-      <h2>Starling EX CE</h2>
-      <p>Community Edition package: Starling Lite facade + Heron Ops + ShrikeOps tools, one Helm chart. Self-host the flock.</p>
-      <a href="https://github.com/warble-tech/warble-army/tree/main/charts/starling-ex-ce">charts/starling-ex-ce</a>
+      <img src="assets/heron-ops-logo.jpg" alt="Starling EX Community" width="72" height="72" style="opacity:0.9" />
+      <h2>Starling EX Community</h2>
+      <p>Self-host package: Starling Lite facade + Heron Ops + ShrikeOps, one Helm chart. Planned CNCF donation under Warble stewardship today.</p>
+      <p class="link-row"><a href="https://github.com/warble-tech/warble-army/tree/main/charts/starling-ex-ce">charts/starling-ex-ce</a></p>
     </article>
+  </section>
+
+  <section class="block" id="start">
+    <h2>Easy places to start</h2>
+    <p class="lede">
+      New to the flock? Contribute where the surface area is small and the feedback loop is fast.
+      We adapt product code into clean Apache-2.0 packages — demos and scanners first.
+    </p>
+    <div class="grid-2">
+      <article class="card">
+        <span class="tag tag-easy">Good first</span>
+        <h3>shrikeops-demo</h3>
+        <p>Golden and bad Kubernetes manifests, Helm fixtures, CI scan demos. Perfect first PR: fix a fixture, improve a report sample, add a bad-case YAML.</p>
+        <p class="link-row"><a href="https://github.com/warble-tech/shrikeops-demo">Open shrikeops-demo</a></p>
+      </article>
+      <article class="card">
+        <span class="tag tag-easy">Good first</span>
+        <h3>ShrikeOps · Heron Ops</h3>
+        <p>Small Go CLIs/MCP servers. Docs, flags, readonly tests, and scan rules land quickly. Label: <code>good-first-issue</code> on each repo.</p>
+        <p class="link-row">
+          <a href="https://github.com/warble-tech/shrikeops">shrikeops</a>
+          ·
+          <a href="https://github.com/warble-tech/heron-ops">heron-ops</a>
+        </p>
+      </article>
+      <article class="card">
+        <span class="tag tag-easy">Docs / site</span>
+        <h3>warbleoss.org · community</h3>
+        <p>Landing copy, install snags, Office Hours notes, RFCs. No cluster required.</p>
+        <p class="link-row">
+          <a href="https://github.com/warble-tech/warbleoss.org">warbleoss.org</a>
+          ·
+          <a href="https://github.com/warble-tech/community">community</a>
+        </p>
+      </article>
+      <article class="card">
+        <span class="tag tag-platform">LF wing</span>
+        <h3>frakma-oss · bootstrap</h3>
+        <p>Platform patterns (OpenFaaS · Ray · Argo · KServe · MLflow · Airflow) and local k3s bootstrap for contributors. Frakma-X seeds here — separate from the CNCF agent-ops path.</p>
+        <p class="link-row">
+          <a href="https://github.com/warble-tech/frakma-oss">frakma-oss</a>
+          ·
+          <a href="https://github.com/warble-tech/warble-bootstrap">warble-bootstrap</a>
+        </p>
+      </article>
+    </div>
   </section>
 
   <section class="block" id="try">
     <div class="try-box">
       <h2>Try MCP now</h2>
-      <p style="color:var(--muted);margin-top:0">
-        Public Starling Lite endpoint (readonly) on the FRAKMA demo host:
+      <p class="muted" style="margin-top:0">
+        Public Starling Lite endpoint (readonly) on the FRAKMA demo host — no install required:
       </p>
       <p><code>https://starling-ex.frakma.io/lite/mcp</code></p>
       <pre>curl -sS -X POST https://starling-ex.frakma.io/lite/mcp \
@@ -245,51 +390,147 @@
 
   <section class="block" id="install">
     <h2>Install Community Edition</h2>
-    <p style="color:var(--muted)">Helm chart from the army umbrella repo:</p>
+    <p class="lede">Self-host the flock on any CNCF-conformant cluster (kind, k3s, GKE, EKS, AKS).</p>
     <pre>git clone --recurse-submodules https://github.com/warble-tech/warble-army.git
 cd warble-army
 
+# Local MCP (no cluster write)
+make starling-lite
+./bin/starling-lite --mode=readonly --transport=http --addr=:8822
+
+# Or Helm CE chart
 helm upgrade --install starling-ex-ce ./charts/starling-ex-ce \
   --namespace warble-army --create-namespace
 
 kubectl -n warble-army port-forward svc/starling-ex-ce 8822:8822
 curl -sS http://127.0.0.1:8822/health</pre>
-    <p style="color:var(--muted)">
-      Docs: <a href="https://github.com/warble-tech/warble-army/blob/main/docs/STARLING_EX_CE.md">Starling EX CE plan</a>
-      · <a href="https://github.com/warble-tech/warble-army/blob/main/docs/BRAND.md">Flock brand map</a>
+    <p class="muted">
+      Docs:
+      <a href="https://github.com/warble-tech/warble-army/blob/main/docs/STARLING_EX_CE.md">Starling EX CE</a>
+      ·
+      <a href="https://github.com/warble-tech/warble-army/blob/main/docs/BRAND.md">Flock brand map</a>
+      ·
+      <a href="https://github.com/warble-tech/warble-army/blob/main/docs/GOVERNANCE.md">Governance</a>
     </p>
   </section>
-
 
   <section class="block" id="foundations">
     <h2>Foundations</h2>
-    <p style="color:var(--muted)">
-      <strong>Starling EX Community</strong> is planned for donation to the
-      <strong>CNCF</strong> (Warble stewards until then).
-      <strong>Frakma-X</strong> is our <strong>Linux Foundation</strong> wing
-      for open platform / LLMOps collaboration—separate from commercial FRAKMA
-      and from the agent-ops CNCF path.
+    <p class="lede">
+      Two wings, two foundations — do not mix the stories.
     </p>
-    <p style="color:var(--muted);font-size:0.9rem">
-      Details:
-      <a href="https://github.com/warble-tech/warble-army/blob/main/docs/GOVERNANCE.md">GOVERNANCE.md</a>
+    <table class="simple">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Starling EX Community</th>
+          <th>Frakma-X</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Layer</strong></td>
+          <td>Agent ↔ cluster ops (MCP, scan, remediate)</td>
+          <td>Platform / LLMOps openness</td>
+        </tr>
+        <tr>
+          <td><strong>Path</strong></td>
+          <td><strong>CNCF donation planned</strong> (Sandbox draft ready)</td>
+          <td><strong>Linux Foundation wing</strong> (forming)</td>
+        </tr>
+        <tr>
+          <td><strong>Today</strong></td>
+          <td>warbleoss.org + warble-army flock repos</td>
+          <td>frakma-oss patterns; commercial FRAKMA stays at frakma.io</td>
+        </tr>
+        <tr>
+          <td><strong>Funding later</strong></td>
+          <td>LFX / CNCF-aligned after Sandbox + community growth</td>
+          <td>LF program membership, grants, separate fund if chartered</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">
+      We do <strong>not</strong> claim “CNCF project” or “LF project” until the foundation accepts the project.
+      Sandbox application draft:
+      <a href="https://github.com/warble-tech/warble-army/blob/main/docs/cncf/SANDBOX_APPLICATION.md">docs/cncf/SANDBOX_APPLICATION.md</a>
     </p>
   </section>
 
+  <section class="block" id="community">
+    <h2>Community</h2>
+    <div class="grid-2">
+      <article class="card">
+        <h3>Office Hours</h3>
+        <p>Every Saturday · 7:00–8:00 PM IST · Discord voice. Live demos, roadmap Q&amp;A, open mic stack reviews.</p>
+        <p class="link-row"><a href="https://discord.gg/WHsJkEFTt">Join Discord</a></p>
+      </article>
+      <article class="card">
+        <h3>RFCs · Working groups · Showcase</h3>
+        <p>Propose changes, join agents / k8s / finops / devx WGs, or showcase what you built with the flock.</p>
+        <p class="link-row"><a href="https://github.com/warble-tech/community">github.com/warble-tech/community</a></p>
+      </article>
+    </div>
+  </section>
+
+  <section class="block" id="support">
+    <h2>Support the flock</h2>
+    <p class="lede">
+      Community Edition stays free. We fund sustainment through enterprise products today and foundation-aligned crowdfunding when the project is ready.
+    </p>
+    <div class="grid-2">
+      <article class="card">
+        <h3>Now</h3>
+        <p>
+          Use CE · file issues · open PRs · join Office Hours · list your org in
+          <a href="https://github.com/warble-tech/warble-army/blob/main/docs/cncf/ADOPTERS.md">ADOPTERS.md</a>.
+          Stars and real adopters unlock foundation reviews.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Next — LFX Crowdfunding</h3>
+        <p>
+          After public repos, multi-contributor history, and community traction, we plan to list
+          <strong>Starling EX Community</strong> on
+          <a href="https://crowdfunding.lfx.linuxfoundation.org/">LFX Crowdfunding</a>
+          (Linux Foundation). Projects must be 100% open source; LF reviews applications before listing.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Enterprise</h3>
+        <p>
+          Multi-tenant SaaS, GitHub App, or managed FRAKMA — optional, never required for CE.
+          → <a href="https://warblecloud.com">warblecloud.com</a>
+          · <a href="https://frakma.io/enterprise">frakma.io/enterprise</a>
+        </p>
+      </article>
+      <article class="card">
+        <h3>Sandbox path</h3>
+        <p>
+          CNCF Sandbox checklist and application draft live under the army umbrella.
+          Help by hardening CE install, adopters, and multi-org maintainership.
+        </p>
+        <p class="link-row">
+          <a href="https://github.com/warble-tech/warble-army/tree/main/docs/cncf">docs/cncf/</a>
+        </p>
+      </article>
+    </div>
+  </section>
+
   <section class="block">
-    <h2>Commercial</h2>
-    <p style="color:var(--muted)">
-      Need multi-tenant SaaS, GitHub App, or managed FRAKMA?
-      CE stays free and self-hosted.
-      → <a href="https://warblecloud.com">warblecloud.com</a>
-      · <a href="https://frakma.io/enterprise">frakma.io/enterprise</a>
+    <h2>Commercial boundary</h2>
+    <p class="muted">
+      CE is a complete self-host path: scan → observe → propose → optional guarded apply.
+      Warble Cloud multi-tenant control plane, billing, and private <code>warble-core</code> stay commercial.
+      Community stays free and self-hosted. No license phone-home.
     </p>
   </section>
 
   <footer>
     © ChirpStack LLP / Warble · Open source under Apache-2.0 (per component)
     · <a href="https://github.com/warble-tech/warble-army">warble-army</a>
-    · Demo MCP: <a href="https://starling-ex.frakma.io/lite/mcp">starling-ex.frakma.io/lite/mcp</a>
+    · Demo: <a href="https://starling-ex.frakma.io/lite/mcp">starling-ex.frakma.io/lite/mcp</a>
+    · <a href="https://warblecloud.com">warblecloud.com</a>
   </footer>
 </body>
 </html>
