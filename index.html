@@ -278,7 +278,7 @@
       <a href="#foundations">Foundations</a>
       <a href="#community">Community</a>
       <a href="#support">Support</a>
-      <a href="https://github.com/warble-tech/warble-army">GitHub</a>
+      <a href="https://github.com/warbletech/warble-army">GitHub</a>
     </nav>
   </header>
 
@@ -295,8 +295,8 @@
       <span class="pill">Self-host CE · no phone-home</span>
     </div>
     <div class="cta">
-      <a class="btn btn-demo" href="https://mcp.warbleoss.org/mcp">Try MCP live →</a>
-      <a class="btn btn-primary" href="https://github.com/warble-tech/warble-army">Get the army</a>
+      <a class="btn btn-demo" href="#try">Try MCP live →</a>
+      <a class="btn btn-primary" href="https://github.com/warbletech/warble-army">Get the army</a>
       <a class="btn btn-ghost" href="#start">Easiest first PR</a>
     </div>
   </section>
@@ -321,7 +321,7 @@
       <img src="assets/heron-ops-logo.jpg" alt="Starling EX Community" width="72" height="72" style="opacity:0.9" />
       <h2>Starling EX Community</h2>
       <p>Self-host package: Starling Lite facade + Heron Ops + ShrikeOps, one Helm chart. Planned CNCF donation under Warble stewardship today.</p>
-      <p class="link-row"><a href="https://github.com/warble-tech/warble-army/tree/main/charts/starling-ex-ce">charts/starling-ex-ce</a></p>
+      <p class="link-row"><a href="https://github.com/warbletech/warble-army/tree/main/charts/starling-ex-ce">charts/starling-ex-ce</a></p>
     </article>
   </section>
 
@@ -353,7 +353,7 @@
         <h3>warbleoss.org · community</h3>
         <p>Landing copy, install snags, Office Hours notes, RFCs. No cluster required.</p>
         <p class="link-row">
-          <a href="https://github.com/warble-tech/warbleoss.org">warbleoss.org</a>
+          <a href="https://github.com/warbletech/warbleoss.org">warbleoss.org</a>
           ·
           <a href="https://github.com/warble-tech/community">community</a>
         </p>
@@ -381,8 +381,8 @@
   -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'</pre>
       <p style="margin-bottom:0">
-        <a class="btn btn-demo" href="https://starling-ex.frakma.io/lite/health">Health check</a>
-        <a class="btn btn-primary" href="https://starling-ex.frakma.io/lite/mcp">Open MCP URL</a>
+        <a class="btn btn-demo" href="https://mcp.warbleoss.org/health">Health check</a>
+        <a class="btn btn-primary" href="https://mcp.warbleoss.org">Open MCP server</a>
       </p>
     </div>
   </section>
@@ -390,7 +390,7 @@
   <section class="block" id="install">
     <h2>Install Community Edition</h2>
     <p class="lede">Self-host the flock on any CNCF-conformant cluster (kind, k3s, GKE, EKS, AKS).</p>
-    <pre>git clone --recurse-submodules https://github.com/warble-tech/warble-army.git
+    <pre>git clone --recurse-submodules https://github.com/warbletech/warble-army.git
 cd warble-army
 
 # Local MCP (no cluster write)
@@ -405,11 +405,11 @@ kubectl -n warble-army port-forward svc/starling-ex-ce 8822:8822
 curl -sS http://127.0.0.1:8822/health</pre>
     <p class="muted">
       Docs:
-      <a href="https://github.com/warble-tech/warble-army/blob/main/docs/STARLING_EX_CE.md">Starling EX CE</a>
+      <a href="https://github.com/warbletech/warble-army/blob/main/docs/STARLING_EX_CE.md">Starling EX CE</a>
       ·
-      <a href="https://github.com/warble-tech/warble-army/blob/main/docs/BRAND.md">Flock brand map</a>
+      <a href="https://github.com/warbletech/warble-army/blob/main/docs/BRAND.md">Flock brand map</a>
       ·
-      <a href="https://github.com/warble-tech/warble-army/blob/main/docs/GOVERNANCE.md">Governance</a>
+      <a href="https://github.com/warbletech/warble-army/blob/main/docs/GOVERNANCE.md">Governance</a>
     </p>
   </section>
 
@@ -452,7 +452,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
     <p class="note">
       We do <strong>not</strong> claim “CNCF project” or “LF project” until the foundation accepts the project.
       Sandbox application draft:
-      <a href="https://github.com/warble-tech/warble-army/blob/main/docs/cncf/SANDBOX_APPLICATION.md">docs/cncf/SANDBOX_APPLICATION.md</a>
+      <a href="https://github.com/warbletech/warble-army/blob/main/docs/cncf/SANDBOX_APPLICATION.md">docs/cncf/SANDBOX_APPLICATION.md</a>
     </p>
   </section>
 
@@ -462,6 +462,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
       <article class="card">
         <h3>Office Hours</h3>
         <p>Every Saturday · 7:00–8:00 PM IST · Discord voice. Live demos, roadmap Q&amp;A, open mic stack reviews.</p>
+        <!-- TODO: replace expired Discord invite -->
         <p class="link-row"><a href="https://discord.gg/WHsJkEFTt">Join Discord</a></p>
       </article>
       <article class="card">
@@ -482,7 +483,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
         <h3>Now</h3>
         <p>
           Use CE · file issues · open PRs · join Office Hours · list your org in
-          <a href="https://github.com/warble-tech/warble-army/blob/main/docs/cncf/ADOPTERS.md">ADOPTERS.md</a>.
+          <a href="https://github.com/warbletech/warble-army/blob/main/docs/cncf/ADOPTERS.md">ADOPTERS.md</a>.
           Stars and real adopters unlock foundation reviews.
         </p>
       </article>
@@ -510,7 +511,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
           Help by hardening CE install, adopters, and multi-org maintainership.
         </p>
         <p class="link-row">
-          <a href="https://github.com/warble-tech/warble-army/tree/main/docs/cncf">docs/cncf/</a>
+          <a href="https://github.com/warbletech/warble-army/tree/main/docs/cncf">docs/cncf/</a>
         </p>
       </article>
     </div>
@@ -527,8 +528,8 @@ curl -sS http://127.0.0.1:8822/health</pre>
 
   <footer>
     © ChirpStack LLP / Warble · Open source under Apache-2.0 (per component)
-    · <a href="https://github.com/warble-tech/warble-army">warble-army</a>
-    · Demo: <a href="https://starling-ex.frakma.io/lite/mcp">starling-ex.frakma.io/lite/mcp</a>
+    · <a href="https://github.com/warbletech/warble-army">warble-army</a>
+    · Demo: <a href="https://mcp.warbleoss.org">mcp.warbleoss.org</a>
     · <a href="https://warblecloud.com">warblecloud.com</a>
   </footer>
 </body>

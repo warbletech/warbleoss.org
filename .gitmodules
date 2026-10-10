@@ -1,0 +1,3 @@
+[submodule "repos/warble-army"]
+	path = repos/warble-army
+	url = https://github.com/warbletech/warble-army.git
