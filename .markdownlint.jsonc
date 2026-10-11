@@ -1,0 +1,4 @@
+{
+  // Markdown tables are allowed to exceed the line-length limit.
+  "MD013": { "tables": false, "code_blocks": false }
+}
