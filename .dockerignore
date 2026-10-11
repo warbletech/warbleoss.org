@@ -1,0 +1,7 @@
+# Build context = site files only.
+*
+!Caddyfile
+!index.html
+!404.html
+!revision.txt
+!assets/

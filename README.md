@@ -3,7 +3,7 @@
 Static site for **Warble OSS**, the open-source home of ShrikeOps, Heron Ops,
 and Starling EX Community.
 
-- **Live site:** <https://warbleoss.org> (GitHub Pages)
+- **Live site:** <https://warbleoss.org> (Railway)
 - **Try MCP:** <https://mcp.warbleoss.org> (MCP endpoint `POST /mcp`,
   health check `GET /health`)
 - **Code:** <https://github.com/warbletech/warble-army>
@@ -25,8 +25,11 @@ and Starling EX Community.
 ```text
 index.html        landing page
 404.html          not-found page
-CNAME             custom domain (warbleoss.org)
 assets/           logos
+Caddyfile         static server config (Railway image)
+Dockerfile        site image: Caddy + index.html, 404.html, assets/ only
+railway.toml      Railway build/healthcheck config
+revision.txt      deployed commit (stamped by CD; "dev" in git)
 repos/            flock repositories as git submodules (not checked out in CI)
 ```
 
@@ -73,11 +76,26 @@ python3 -m http.server 8080
 
 ## Deploy
 
-Pushes to `main` on `github.com/warbletech/warbleoss.org` publish via GitHub
-Pages using [`.github/workflows/pages.yml`](.github/workflows/pages.yml).
-The custom domain `warbleoss.org` is configured through the `CNAME` file.
-CI checks out the repo without submodules, so `repos/` is never published
-with content.
+The site runs on Railway as a small Caddy image ([`Dockerfile`](Dockerfile),
+[`Caddyfile`](Caddyfile), [`railway.toml`](railway.toml)). Only `index.html`,
+`404.html`, `assets/` and `revision.txt` are copied into the image.
+
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
+
+- **Pull requests:** link check, `docker build`, and a local container smoke test.
+- **Push to `main` / manual run:** the same checks, then `railway up` to the
+  `production` environment, then a smoke test that waits until
+  `https://warbleoss.org/revision.txt` shows the pushed commit, and checks for
+  a 200 status and the page title.
+
+Setup (secrets, Railway service, domain/DNS) is in [DEPLOY.md](DEPLOY.md).
+
+Run the production image locally:
+
+```bash
+docker build -t warbleoss-site . && docker run --rm -p 8080:8080 warbleoss-site
+curl -s localhost:8080/healthz   # ok
+```
 
 ## Speaking rules (do not break)
 

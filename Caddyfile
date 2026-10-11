@@ -1,0 +1,37 @@
+# warbleoss.org static site — served by Caddy on Railway.
+# Railway terminates TLS and injects $PORT; Caddy only speaks plain HTTP.
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+:{$PORT:8080} {
+	root * {$SITE_ROOT:/srv}
+	encode zstd gzip
+
+	# Railway healthcheck (railway.toml) and CI smoke tests.
+	respond /healthz "ok" 200
+
+	# Optional: if www.warbleoss.org is attached to this service, send it to the apex.
+	@www host www.warbleoss.org
+	redir @www https://warbleoss.org{uri} permanent
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		X-Frame-Options DENY
+		-Server
+	}
+	@pages path / *.html /revision.txt
+	header @pages Cache-Control "no-cache"
+	header /assets/* Cache-Control "public, max-age=604800"
+
+	file_server
+
+	# Unknown paths get the site's own 404 page (with status 404).
+	handle_errors 404 {
+		rewrite * /404.html
+		file_server
+	}
+}
