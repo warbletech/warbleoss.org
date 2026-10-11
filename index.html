@@ -307,14 +307,14 @@
       <img src="assets/shrike-ops-logo.jpg" alt="ShrikeOps logo" width="72" height="72" />
       <h2>ShrikeOps</h2>
       <p>Hunts misconfigurations, CVEs, and deprecated APIs. Impales findings on a scored report before they hit production.</p>
-      <p class="link-row"><a href="https://github.com/warble-tech/shrikeops">github.com/warble-tech/shrikeops</a></p>
+      <p class="link-row"><a href="https://github.com/warbletech/shrikeops">github.com/warbletech/shrikeops</a></p>
     </article>
     <article class="card">
       <span class="tag tag-heron">MCP</span>
       <img src="assets/heron-ops-logo.jpg" alt="Heron Ops logo" width="72" height="72" />
       <h2>Heron Ops</h2>
       <p>Kubernetes MCP server for live pods, logs, events, and metrics. Formerly SteadyHelm. Calm observation, precise tools for any agent IDE.</p>
-      <p class="link-row"><a href="https://github.com/warble-tech/heron-ops">github.com/warble-tech/heron-ops</a></p>
+      <p class="link-row"><a href="https://github.com/warbletech/heron-ops">github.com/warbletech/heron-ops</a></p>
     </article>
     <article class="card">
       <span class="tag tag-starling">CE</span>
@@ -336,16 +336,16 @@
         <span class="tag tag-easy">Good first</span>
         <h3>shrikeops-demo</h3>
         <p>Golden and bad Kubernetes manifests, Helm fixtures, CI scan demos. Perfect first PR: fix a fixture, improve a report sample, add a bad-case YAML.</p>
-        <p class="link-row"><a href="https://github.com/warble-tech/shrikeops-demo">Open shrikeops-demo</a></p>
+        <p class="link-row"><a href="https://github.com/warbletech/shrikeops-demo">Open shrikeops-demo</a></p>
       </article>
       <article class="card">
         <span class="tag tag-easy">Good first</span>
         <h3>ShrikeOps · Heron Ops</h3>
         <p>Small Go CLIs/MCP servers. Docs, flags, readonly tests, and scan rules land quickly. Label: <code>good-first-issue</code> on each repo.</p>
         <p class="link-row">
-          <a href="https://github.com/warble-tech/shrikeops">shrikeops</a>
+          <a href="https://github.com/warbletech/shrikeops">shrikeops</a>
           ·
-          <a href="https://github.com/warble-tech/heron-ops">heron-ops</a>
+          <a href="https://github.com/warbletech/heron-ops">heron-ops</a>
         </p>
       </article>
       <article class="card">
@@ -355,7 +355,7 @@
         <p class="link-row">
           <a href="https://github.com/warbletech/warbleoss.org">warbleoss.org</a>
           ·
-          <a href="https://github.com/warble-tech/community">community</a>
+          <a href="https://github.com/warbletech/community">community</a>
         </p>
       </article>
       <article class="card">
@@ -363,7 +363,7 @@
         <h3>warble-bootstrap</h3>
         <p>One-shot Rancher Desktop / k3s stack for local demos. Frakma-X (Linux Foundation wing) is forming separately — platform docs stay private until chartered.</p>
         <p class="link-row">
-          <a href="https://github.com/warble-tech/warble-bootstrap">github.com/warble-tech/warble-bootstrap</a>
+          <a href="https://github.com/warbletech/warble-bootstrap">github.com/warbletech/warble-bootstrap</a>
         </p>
       </article>
     </div>
@@ -373,10 +373,10 @@
     <div class="try-box">
       <h2>Try MCP now</h2>
       <p class="muted" style="margin-top:0">
-        Always-on public MCP (Railway) — independent of GKE. GKE demo still available as secondary:
+        Always-on public MCP server (read-only). Send JSON-RPC over <code>POST</code>:
       </p>
       <p><code>https://mcp.warbleoss.org/mcp</code> <span class="muted">(Railway · always-on)</span></p>
-      <p class="muted" style="margin:0.5rem 0 0"><code>https://starling-ex.frakma.io/lite/mcp</code> (GKE demo)</p>
+      <p class="muted" style="margin:0.5rem 0 0"><code>https://mcp.warbleoss.org/health</code> (health check)</p>
       <pre>curl -sS -X POST https://mcp.warbleoss.org/mcp \
   -H 'Content-Type: application/json' \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'</pre>
@@ -468,7 +468,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
       <article class="card">
         <h3>RFCs · Working groups · Showcase</h3>
         <p>Propose changes, join agents / k8s / finops / devx WGs, or showcase what you built with the flock.</p>
-        <p class="link-row"><a href="https://github.com/warble-tech/community">github.com/warble-tech/community</a></p>
+        <p class="link-row"><a href="https://github.com/warbletech/community">github.com/warbletech/community</a></p>
       </article>
     </div>
   </section>

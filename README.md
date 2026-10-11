@@ -34,11 +34,21 @@ repos/            flock repositories as git submodules (not checked out in CI)
 
 Related flock repositories are tracked as git submodules under `repos/`:
 
-| Path                 | Repository                                             |
-| -------------------- | ------------------------------------------------------ |
-| `repos/warble-army/` | [warbletech/warble-army][warble-army] (flock umbrella) |
+| Path                      | Repository                                             |
+| ------------------------- | ------------------------------------------------------ |
+| `repos/warble-army/`      | [warbletech/warble-army][warble-army] (flock umbrella) |
+| `repos/shrikeops/`        | [warbletech/shrikeops][shrikeops] (scanner)            |
+| `repos/heron-ops/`        | [warbletech/heron-ops][heron-ops] (Kubernetes MCP)     |
+| `repos/community/`        | [warbletech/community][community] (RFCs, WGs)          |
+| `repos/shrikeops-demo/`   | [warbletech/shrikeops-demo][shrikeops-demo] (demos)    |
+| `repos/warble-bootstrap/` | [warbletech/warble-bootstrap][warble-bootstrap]        |
 
 [warble-army]: https://github.com/warbletech/warble-army
+[shrikeops]: https://github.com/warbletech/shrikeops
+[heron-ops]: https://github.com/warbletech/heron-ops
+[community]: https://github.com/warbletech/community
+[shrikeops-demo]: https://github.com/warbletech/shrikeops-demo
+[warble-bootstrap]: https://github.com/warbletech/warble-bootstrap
 
 Clone with submodules (needs access to the private repos):
 

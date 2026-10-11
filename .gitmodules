@@ -1,3 +1,18 @@
 [submodule "repos/warble-army"]
 	path = repos/warble-army
 	url = https://github.com/warbletech/warble-army.git
+[submodule "repos/shrikeops"]
+	path = repos/shrikeops
+	url = https://github.com/warbletech/shrikeops.git
+[submodule "repos/heron-ops"]
+	path = repos/heron-ops
+	url = https://github.com/warbletech/heron-ops.git
+[submodule "repos/community"]
+	path = repos/community
+	url = https://github.com/warbletech/community.git
+[submodule "repos/shrikeops-demo"]
+	path = repos/shrikeops-demo
+	url = https://github.com/warbletech/shrikeops-demo.git
+[submodule "repos/warble-bootstrap"]
+	path = repos/warble-bootstrap
+	url = https://github.com/warbletech/warble-bootstrap.git
