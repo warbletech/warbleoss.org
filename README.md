@@ -10,15 +10,16 @@ and Starling EX Community.
 
 ## What's on the landing page
 
-| Section                 | Purpose                                              |
-| ----------------------- | ---------------------------------------------------- |
-| Hero + foundation pills | CNCF Sandbox draft · Frakma-X LF wing                |
-| Flock cards             | ShrikeOps, Heron Ops, Starling EX Community          |
-| Easy start              | Good-first repos for contributors                    |
-| Try MCP / Install       | Live demo + Helm / local MCP                         |
-| Foundations             | CNCF vs LF table (honest status language)            |
-| Community               | Discord Office Hours + community repo                |
-| Support                 | Contribute now · LFX Crowdfunding later · Enterprise |
+| Section                 | Purpose                                                                |
+| ----------------------- | ---------------------------------------------------------------------- |
+| Hero + foundation pills | CNCF Sandbox draft · Frakma-X LF wing                                  |
+| Flock cards             | ShrikeOps, Heron Ops, Starling EX Community                            |
+| Easy start              | Good-first repos for contributors                                      |
+| Try MCP / Install       | Live demo + Helm / local MCP                                           |
+| Foundations             | CNCF vs LF table (honest status language)                              |
+| Path to CNCF            | Readiness checklist + Sandbox → Graduation steps                       |
+| Community               | [Discord](https://discord.gg/kAfR57mVDX) Office Hours + community repo |
+| Support                 | Contribute now · LFX Crowdfunding later · Enterprise                   |
 
 ## Repository layout
 
@@ -50,7 +51,7 @@ Related flock repositories are tracked as git submodules under `repos/`:
 [shrikeops-demo]: https://github.com/warbletech/shrikeops-demo
 [warble-bootstrap]: https://github.com/warbletech/warble-bootstrap
 
-Clone with submodules (needs access to the private repos):
+Clone with submodules (all repos are public):
 
 ```bash
 git clone --recurse-submodules https://github.com/warbletech/warbleoss.org.git
@@ -86,6 +87,12 @@ with content.
 | "Starling EX Community is planned for CNCF donation"    | "We are a CNCF project" (until accepted)   |
 | "Frakma-X is our Linux Foundation wing"                 | "FRAKMA is an LF project" without Frakma-X |
 | "LFX Crowdfunding planned after public OSS + community" | Implying funds are live before listing     |
+
+## CNCF
+
+See [CNCF.md](CNCF.md) for the CNCF Sandbox readiness checklist and steps.
+Warble Cloud is a Linux Foundation member and an Agentic AI Foundation (AAIF)
+Silver member.
 
 ## Contributing
 
