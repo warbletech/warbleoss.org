@@ -2,25 +2,54 @@ name: pages
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
-  pages: write
-  id-token: write
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Publish only the site. Everything else (README, OSS docs, repos/ submodules,
+      # .github) stays out of the Pages artifact.
+      - name: Stage site files
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp index.html 404.html CNAME _site/
+          cp -r assets _site/
+          # Add top-level files here only if the site links to them by relative URL.
+          test -s _site/index.html && test -s _site/404.html && test -s _site/CNAME
+          echo "Pages artifact:"; find _site -type f | sort
+      - name: Check local links resolve inside the artifact
+        run: |
+          set -euo pipefail
+          missing=0
+          for ref in $(grep -hoE '(href|src)="[^"#?]+' _site/*.html | sed -E 's/^(href|src)="//' | grep -vE '^(https?:|mailto:|//|data:)' | sort -u); do
+            path="_site/${ref#/}"
+            [ "$ref" = "/" ] && continue
+            [ -e "$path" ] || { echo "::error::missing in artifact: $ref"; missing=1; }
+          done
+          exit $missing
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
   deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
       - id: deployment
         uses: actions/deploy-pages@v4
