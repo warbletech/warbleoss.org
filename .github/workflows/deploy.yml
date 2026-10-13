@@ -1,0 +1,132 @@
+name: deploy
+
+# CD for warbleoss.org -> Railway (Caddy static image, see Dockerfile / railway.toml).
+#  - pull_request: lint, link check, build the image and smoke it locally. No deploy.
+#  - push to main / manual run: the same checks, then `railway up` to production,
+#    then a smoke test against the public URL that waits for this commit to be live.
+#
+# Needs (repo Settings -> Environments -> production):
+#   secret   RAILWAY_TOKEN    Railway *project* token for the production environment
+#   variable RAILWAY_SERVICE  Railway service name of the site (e.g. warbleoss-site)
+#   variable SITE_URL         optional, default https://warbleoss.org
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  RAILWAY_CLI_VERSION: "5.64.2"
+  EXPECTED_TITLE: "Warble OSS"
+
+jobs:
+  check:
+    name: Lint, link check & container smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Stage site files (exactly what the image serves)
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp index.html 404.html revision.txt _site/
+          cp -r assets _site/
+          test -s _site/index.html && test -s _site/404.html
+          grep -q "<title>${EXPECTED_TITLE}" _site/index.html
+          find _site -type f | sort
+
+      - name: Check local links resolve inside the site
+        run: |
+          set -euo pipefail
+          missing=0
+          while IFS= read -r ref; do
+            [ "$ref" = "/" ] && continue
+            [ -e "_site/${ref#/}" ] || { echo "::error::broken local link: $ref"; missing=1; }
+          done < <(grep -hoE '(href|src)="[^"#?]+' _site/*.html | sed -E 's/^(href|src)="//' | grep -vE '^(https?:|mailto:|//|data:)' | sort -u)
+          exit $missing
+
+      - name: Build image
+        run: docker build -t warbleoss-site:ci .
+
+      - name: Smoke the container
+        run: |
+          set -euo pipefail
+          docker run -d --name site -e PORT=9000 -p 9000:9000 warbleoss-site:ci
+          for _ in $(seq 1 30); do curl -fsS -o /dev/null http://127.0.0.1:9000/healthz && break; sleep 1; done
+          curl -fsS http://127.0.0.1:9000/healthz | grep -qx ok
+          curl -fsS http://127.0.0.1:9000/ | grep -q "<title>${EXPECTED_TITLE}"
+          curl -fsS -o /dev/null http://127.0.0.1:9000/assets/heron-ops-logo.jpg
+          code=$(curl -s -o /tmp/nf.html -w '%{http_code}' http://127.0.0.1:9000/no-such-page)
+          if [ "$code" != 404 ] || ! grep -q 'Not found' /tmp/nf.html; then echo "::error::404 page broken ($code)"; exit 1; fi
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:9000/README.md)
+          [ "$code" = 404 ] || { echo "::error::non-site file is served ($code)"; exit 1; }
+          echo "container smoke OK"
+
+      - name: Container logs
+        if: always()
+        run: docker logs site 2>&1 | tail -n 50 || true
+
+  deploy:
+    name: Deploy to Railway (production)
+    needs: check
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: ${{ vars.SITE_URL || 'https://warbleoss.org' }}
+    concurrency:
+      group: railway-production-warbleoss-site
+      cancel-in-progress: false
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_SERVICE: ${{ vars.RAILWAY_SERVICE }}
+      SITE_URL: ${{ vars.SITE_URL || 'https://warbleoss.org' }}
+    steps:
+      - name: Check deploy configuration
+        run: |
+          ok=1
+          [ -n "${RAILWAY_TOKEN}" ]   || { echo "::error::secret RAILWAY_TOKEN is not set (Railway project token, production environment)"; ok=0; }
+          [ -n "${RAILWAY_SERVICE}" ] || { echo "::error::variable RAILWAY_SERVICE is not set (Railway service name of the site)"; ok=0; }
+          [ "$ok" = 1 ]
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+
+      - name: Install Railway CLI
+        run: npm install -g "@railway/cli@${RAILWAY_CLI_VERSION}" && railway --version
+
+      - name: Stamp revision
+        run: echo "${GITHUB_SHA}" > revision.txt
+
+      - name: railway up
+        # Project token => project + environment are implied; --ci streams build logs and
+        # fails the step if the build fails.
+        run: railway up --ci --service "${RAILWAY_SERVICE}" --message "warbleoss.org ${GITHUB_SHA::7} (run ${GITHUB_RUN_ID})"
+
+      - name: Smoke test production
+        run: |
+          set -uo pipefail
+          url="${SITE_URL%/}"
+          # Wait (up to ~8 min) for the new deployment to pass Railway's healthcheck and go live.
+          rev=""
+          for i in $(seq 1 48); do
+            rev=$(curl -fsS --max-time 10 "$url/revision.txt?ts=$(date +%s)" 2>/dev/null | tr -d '[:space:]')
+            [ "$rev" = "${GITHUB_SHA}" ] && break
+            echo "waiting for ${GITHUB_SHA::7} (live: ${rev:-none}) [$i/48]"; sleep 10
+          done
+          [ "$rev" = "${GITHUB_SHA}" ] || { echo "::error::$url is not serving ${GITHUB_SHA::7} (got '${rev:-none}'). Check Railway logs and that the domain points at Railway."; exit 1; }
+          code=$(curl -s -o /tmp/index.html -w '%{http_code}' --max-time 15 "$url/")
+          [ "$code" = 200 ] || { echo "::error::$url/ returned $code"; exit 1; }
+          grep -q "<title>${EXPECTED_TITLE}" /tmp/index.html || { echo "::error::$url/ title does not contain '${EXPECTED_TITLE}'"; exit 1; }
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 15 "$url/no-such-page")
+          [ "$code" = 404 ] || { echo "::error::$url/no-such-page returned $code, expected 404"; exit 1; }
+          echo "production smoke OK: $url serves ${GITHUB_SHA::7}"
