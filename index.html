@@ -251,6 +251,16 @@
       padding: 0.5rem 0 0.5rem 0.9rem;
       margin: 1rem 0 0;
     }
+    .status { font-weight: 600; white-space: nowrap; }
+    .status-done { color: var(--ok); }
+    .status-wip { color: var(--warn); }
+    .status-todo { color: var(--muted); }
+    .steps { counter-reset: step; margin-top: 1.25rem; }
+    .steps .card h3::before {
+      counter-increment: step;
+      content: counter(step) ". ";
+      color: var(--accent);
+    }
     footer {
       border-top: 1px solid var(--border);
       margin-top: 1rem;
@@ -276,6 +286,7 @@
       <a href="#install">Install</a>
       <a href="#try">Try MCP</a>
       <a href="#foundations">Foundations</a>
+      <a href="#cncf">CNCF path</a>
       <a href="#community">Community</a>
       <a href="#support">Support</a>
       <a href="https://github.com/warbletech/warble-army">GitHub</a>
@@ -292,6 +303,8 @@
     <div class="pills" aria-label="Foundation status">
       <span class="pill pill-cncf">CNCF Sandbox — application draft</span>
       <span class="pill pill-lf">Frakma-X · LF wing (forming)</span>
+      <span class="pill">LF member · AAIF Silver member</span>
+      <span class="pill">All flock repos public on GitHub</span>
       <span class="pill">Self-host CE · no phone-home</span>
     </div>
     <div class="cta">
@@ -456,14 +469,59 @@ curl -sS http://127.0.0.1:8822/health</pre>
     </p>
   </section>
 
+  <section class="block" id="cncf">
+    <h2>Path to CNCF</h2>
+    <p class="lede">
+      We plan to propose the open flock (warble-army, Heron Ops, ShrikeOps) to the CNCF as a
+      <strong>Sandbox</strong> project. Warble Cloud is a Linux Foundation member and an
+      <a href="https://aaif.io">Agentic AI Foundation (AAIF)</a> Silver member, the LF home of MCP.
+      Not a CNCF project until the TOC accepts it.
+    </p>
+    <table class="simple">
+      <thead>
+        <tr>
+          <th scope="col">Requirement</th>
+          <th scope="col">Status</th>
+          <th scope="col">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Public repos · Apache-2.0</td><td class="status status-done">Done</td><td>All in-scope repos public since Oct 2026</td></tr>
+        <tr><td>Code of Conduct · Contributing · Security policy</td><td class="status status-done">Done</td><td><a href="https://github.com/warbletech/warble-army/tree/main/docs/cncf">docs/cncf/</a></td></tr>
+        <tr><td>Governance · Maintainers · Adopters</td><td class="status status-wip">In progress</td><td>Seed files exist; need multi-org maintainers and real adopters</td></tr>
+        <tr><td>Roadmap · releases · tests</td><td class="status status-wip">In progress</td><td>ShrikeOps v0.1.0 released; Heron Ops and Starling Lite next</td></tr>
+        <tr><td>Project name &amp; trademark ready to donate</td><td class="status status-todo">Not yet</td><td>Naming and legal review</td></tr>
+        <tr><td>TAG presentation · OpenSSF Best Practices badge</td><td class="status status-todo">Not yet</td><td>Badge required for Incubation</td></tr>
+      </tbody>
+    </table>
+    <div class="grid-2 steps">
+      <article class="card">
+        <h3>Sandbox</h3>
+        <p>Apply on <code>cncf/sandbox</code>; TOC review and vote; sign the Contribution Agreement and donate trademarks.</p>
+      </article>
+      <article class="card">
+        <h3>Incubation</h3>
+        <p>Technical and governance reviews, regular releases, security self-assessment, OpenSSF badge, 3+ verified adopters.</p>
+      </article>
+      <article class="card">
+        <h3>Graduation</h3>
+        <p>Maintainers from 2+ organizations, third-party security audit, documented release process, production adopters.</p>
+      </article>
+    </div>
+    <p class="note">
+      Full checklist:
+      <a href="https://github.com/warbletech/warbleoss.org/blob/main/CNCF.md">CNCF.md</a>
+      · Help by adopting CE, becoming a maintainer, or joining <a href="https://discord.gg/kAfR57mVDX">Discord</a>.
+    </p>
+  </section>
+
   <section class="block" id="community">
     <h2>Community</h2>
     <div class="grid-2">
       <article class="card">
         <h3>Office Hours</h3>
         <p>Every Saturday · 7:00–8:00 PM IST · Discord voice. Live demos, roadmap Q&amp;A, open mic stack reviews.</p>
-        <!-- TODO: replace expired Discord invite -->
-        <p class="link-row"><a href="https://discord.gg/WHsJkEFTt">Join Discord</a></p>
+        <p class="link-row"><a href="https://discord.gg/kAfR57mVDX">Join Discord</a></p>
       </article>
       <article class="card">
         <h3>RFCs · Working groups · Showcase</h3>
@@ -490,7 +548,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
       <article class="card">
         <h3>Next — LFX Crowdfunding</h3>
         <p>
-          After public repos, multi-contributor history, and community traction, we plan to list
+          Repos are public now. After multi-contributor history and community traction, we plan to list
           <strong>Starling EX Community</strong> on
           <a href="https://crowdfunding.lfx.linuxfoundation.org/">LFX Crowdfunding</a>
           (Linux Foundation). Projects must be 100% open source; LF reviews applications before listing.
