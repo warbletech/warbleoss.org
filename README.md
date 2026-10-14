@@ -5,7 +5,8 @@ and Starling EX Community.
 
 - **Live site:** <https://warbleoss.org> (Railway)
 - **Try MCP:** <https://mcp.warbleoss.org> (MCP endpoint `POST /mcp`,
-  health check `GET /health`)
+  health check `GET /health`). This is the community offering. It is deployed
+  on Railway and stays there. It is not the enterprise IDP.
 - **Code:** <https://github.com/warbletech/warble-army>
 
 ## What's on the landing page
