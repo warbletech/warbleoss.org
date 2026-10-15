@@ -1,56 +1,62 @@
-# Deploying warbleoss.org (Railway)
+# Deploying warbleoss.org (GKE)
 
-Continuous deployment is handled by `.github/workflows/deploy.yml`: on every push to `main`,
-it runs `railway up --ci --service $RAILWAY_SERVICE`, then smoke-tests the public URL.
+Continuous deployment is handled by `.github/workflows/deploy.yml`, on the same GKE
+cluster and Artifact Registry as `warbletech/warble-core`:
 
-## One-time setup
+| Setting | Value |
+|---|---|
+| GCP project | `green-device-505513-k4` |
+| Cluster / location | `warble-green-device` / `us-central1-a` (region `us-central1`) |
+| Image | `us-central1-docker.pkg.dev/green-device-505513-k4/warble/warbleoss-site:<sha>` |
+| Namespace | `warbleoss` |
+| Ingress static IP | global address `warbleoss-ip` (own IP, not warble-core's `warble-gke-ingress-ip`) |
+| TLS | GKE ManagedCertificate `warbleoss-cert` (warbleoss.org, www.warbleoss.org) |
 
-### 1. Railway service
+- **pull_request:** lint, link check, build the image, smoke it locally. No deploy.
+- **push to `main` / manual run:** checks, then build + push the image tagged with the
+  commit SHA, `kubectl apply` the `k8s/` manifests, `kubectl set image`,
+  `kubectl rollout status`, and a smoke test of the public URL (waits for
+  `/revision.txt` to equal the commit SHA; warns rather than fails until DNS/TLS are cut over).
 
-1. In the Railway project that hosts Warble OSS (the same project as the Starling Lite MCP
-   service is fine), create an **Empty Service** named for example `warbleoss-site`.
-   No GitHub connection is needed: CI uploads the code with `railway up`.
-   If you do connect the repo, turn off auto-deploys, or every push will deploy twice.
-2. The service picks up `railway.toml`: it uses the Dockerfile builder, a `/healthz`
-   healthcheck, and restarts on failure. Do not set `PORT`; Railway injects it.
-3. **Settings → Networking → Generate Domain** gives a `*.up.railway.app` URL for testing.
+Manifests in `k8s/` are namespaced only: the deploy service account cannot create
+clusterroles/clusterrolebindings (warble-core #235).
 
-### 2. Token and GitHub settings
+Caddy listens on `$PORT` = 8080 (the Service `targetPort`), serves `/healthz` for the
+probes and the GCE load-balancer health check, and runs as `nobody`.
 
-Railway: **Project → Settings → Tokens → Create token**. Choose the `production` environment.
-This is a *project* token, scoped to one project and environment. It can run `railway up`,
-but not `whoami` or `link`.
+## One-time setup checklist
 
-GitHub (`warbletech/warbleoss.org` → Settings → Environments → **New environment
-`production`**). Optionally restrict it to the `main` branch and add required reviewers.
-
-| Kind     | Name              | Value |
-|----------|-------------------|-------|
-| Secret   | `RAILWAY_TOKEN`   | the project token from above |
-| Variable | `RAILWAY_SERVICE` | the Railway service name, e.g. `warbleoss-site` |
-| Variable | `SITE_URL`        | optional. Defaults to `https://warbleoss.org`. Set it to the `*.up.railway.app` URL until DNS is moved. |
-
-### 3. Custom domain
-
-1. Railway → service → **Settings → Networking → Custom Domain → `warbleoss.org`**
-   (and `www.warbleoss.org` if wanted; Caddy redirects `www` to the apex).
-   Railway shows a CNAME target (`<id>.up.railway.app`) and may ask for a
-   `_railway-verify` TXT record.
-2. Cloudflare (zone `warbleoss.org`):
-   - Replace the apex `A`/`AAAA` records that point at GitHub Pages with
-     `CNAME @ → <id>.up.railway.app`. Cloudflare flattens CNAMEs at the apex.
-   - Do the same for `www` if it is attached.
-   - Add the `_railway-verify` TXT record if Railway asks for one.
-   - Leave the records **DNS only (grey cloud)** until Railway shows the domain as
-     verified and the certificate as issued. You can enable the proxy afterwards, with
-     SSL/TLS mode **Full (strict)**.
-3. Remove `SITE_URL` (or set it to `https://warbleoss.org`) so the CD smoke test checks
-   the real domain.
-
-## Manual deploy
-
-```bash
-RAILWAY_TOKEN=... railway up --ci --service warbleoss-site
-```
-
-Or run the **deploy** workflow from the Actions tab (`workflow_dispatch`).
+- [ ] **GitHub secrets.** In `warbletech/warbleoss.org` → Settings → Environments →
+      `production` (create it; optionally restrict to `main`), add the same values
+      warble-core uses:
+  - secret `GCP_WORKLOAD_IDENTITY_PROVIDER`
+  - secret `GCP_SERVICE_ACCOUNT`
+  - optional variable `SITE_URL` (default `https://warbleoss.org`)
+  - remove the old `RAILWAY_TOKEN` / `RAILWAY_SERVICE` if present.
+- [ ] **Workload Identity Federation.** The deploy SA is bound to warble-core through a
+      `principalSet` on `attribute.repository`. Add the same binding for this repo, and if
+      the pool provider's `attribute_condition` names only warble-core, widen it, for example
+      `assertion.repository in ["warbletech/warble-core", "warbletech/warbleoss.org"]`.
+      The WIF pool/provider is **not** defined in `warble-core/terraform` (there's no
+      `google_iam_workload_identity_pool*` resource there), so change it where it actually lives:
+      ```sh
+      gcloud iam workload-identity-pools providers describe <PROVIDER> \
+        --workload-identity-pool <POOL> --location global \
+        --project green-device-505513-k4 --format 'value(attributeCondition)'
+      gcloud iam service-accounts add-iam-policy-binding <GCP_SERVICE_ACCOUNT> \
+        --project green-device-505513-k4 --role roles/iam.workloadIdentityUser \
+        --member "principalSet://iam.googleapis.com/<POOL_RESOURCE>/attribute.repository/warbletech/warbleoss.org"
+      ```
+      `<POOL_RESOURCE>` is the `projects/<number>/locations/global/workloadIdentityPools/<pool>`
+      prefix of `GCP_WORKLOAD_IDENTITY_PROVIDER`.
+- [ ] **Static IP.**
+      `gcloud compute addresses create warbleoss-ip --global --project green-device-505513-k4`,
+      then read it back with
+      `gcloud compute addresses describe warbleoss-ip --global --project green-device-505513-k4 --format 'value(address)'`.
+      You can also codify it next to `google_compute_global_address.gke_ingress` in warble-core `terraform/gke.tf`.
+- [ ] **Cloudflare DNS.** Point `A warbleoss.org` and `A www.warbleoss.org` at the `warbleoss-ip`
+      address, **DNS only (grey cloud)** until
+      `kubectl -n warbleoss get managedcertificate warbleoss-cert` shows `Active`.
+      Google has to reach the origin directly to issue the cert, which can take 15–60 min.
+      After that you can turn on proxying with SSL mode Full (strict).
+- [ ] **Decommission Railway** once the GKE site is live.
