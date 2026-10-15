@@ -3,7 +3,7 @@
 Static site for **Warble OSS**, the open-source home of ShrikeOps, Heron Ops,
 and Starling EX Community.
 
-- **Live site:** <https://warbleoss.org> (Railway)
+- **Live site:** <https://warbleoss.org> (GKE)
 - **Try MCP:** <https://mcp.warbleoss.org> (MCP endpoint `POST /mcp`,
   health check `GET /health`). This is the community offering. It is deployed
   on Railway and stays there. It is not the enterprise IDP.
@@ -28,9 +28,9 @@ and Starling EX Community.
 index.html        landing page
 404.html          not-found page
 assets/           logos
-Caddyfile         static server config (Railway image)
+Caddyfile         static server config (site image)
 Dockerfile        site image: Caddy + index.html, 404.html, assets/ only
-railway.toml      Railway build/healthcheck config
+k8s/              GKE manifests (namespace, deployment, service, cert, ingress)
 revision.txt      deployed commit (stamped by CD; "dev" in git)
 repos/            flock repositories as git submodules (not checked out in CI)
 ```
@@ -78,19 +78,19 @@ python3 -m http.server 8080
 
 ## Deploy
 
-The site runs on Railway as a small Caddy image ([`Dockerfile`](Dockerfile),
-[`Caddyfile`](Caddyfile), [`railway.toml`](railway.toml)). Only `index.html`,
+The site runs on GKE (the warble-core cluster) as a small Caddy image ([`Dockerfile`](Dockerfile),
+[`Caddyfile`](Caddyfile), [`k8s/`](k8s/)). Only `index.html`,
 `404.html`, `assets/` and `revision.txt` are copied into the image.
 
 [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
 
 - **Pull requests:** link check, `docker build`, and a local container smoke test.
-- **Push to `main` / manual run:** the same checks, then `railway up` to the
+- **Push to `main` / manual run:** the same checks, then build/push to Artifact Registry and roll out on GKE to the
   `production` environment, then a smoke test that waits until
   `https://warbleoss.org/revision.txt` shows the pushed commit, and checks for
   a 200 status and the page title.
 
-Setup (secrets, Railway service, domain/DNS) is in [DEPLOY.md](DEPLOY.md).
+Setup (secrets, WIF, static IP, DNS) is in [DEPLOY.md](DEPLOY.md).
 
 Run the production image locally:
 

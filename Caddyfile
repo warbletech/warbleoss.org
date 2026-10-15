@@ -1,5 +1,5 @@
-# warbleoss.org static site — served by Caddy on Railway.
-# Railway terminates TLS and injects $PORT; Caddy only speaks plain HTTP.
+# warbleoss.org static site — served by Caddy on GKE (k8s/).
+# The GKE Ingress terminates TLS; Caddy only speaks plain HTTP on $PORT (8080, matches k8s/service.yaml targetPort).
 {
 	admin off
 	auto_https off
@@ -10,7 +10,7 @@
 	root * {$SITE_ROOT:/srv}
 	encode zstd gzip
 
-	# Railway healthcheck (railway.toml) and CI smoke tests.
+	# k8s readiness/liveness probes, GCE LB health check and CI smoke tests.
 	respond /healthz "ok" 200
 
 	# Optional: if www.warbleoss.org is attached to this service, send it to the apex.

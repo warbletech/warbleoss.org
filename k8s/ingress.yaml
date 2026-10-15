@@ -1,0 +1,34 @@
+# GCE ingress with its own global static IP (warble-core uses warble-gke-ingress-ip
+# for its own ingress; that IP is not shared). Reserve once:
+#   gcloud compute addresses create warbleoss-ip --global --project green-device-505513-k4
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: warbleoss-ingress
+  namespace: warbleoss
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "warbleoss-ip"
+    networking.gke.io/managed-certificates: "warbleoss-cert"
+spec:
+  rules:
+    - host: warbleoss.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: warbleoss-site
+                port:
+                  number: 80
+    - host: www.warbleoss.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: warbleoss-site
+                port:
+                  number: 80

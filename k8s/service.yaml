@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: warbleoss-site
+  namespace: warbleoss
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+spec:
+  type: ClusterIP
+  selector:
+    app: warbleoss-site
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

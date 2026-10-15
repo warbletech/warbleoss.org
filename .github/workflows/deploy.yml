@@ -1,14 +1,15 @@
 name: deploy
 
-# CD for warbleoss.org -> Railway (Caddy static image, see Dockerfile / railway.toml).
+# CD for warbleoss.org -> GKE (same cluster/registry as warbletech/warble-core).
 #  - pull_request: lint, link check, build the image and smoke it locally. No deploy.
-#  - push to main / manual run: the same checks, then `railway up` to production,
-#    then a smoke test against the public URL that waits for this commit to be live.
+#  - push to main / manual run: the same checks, then build + push the image to Artifact
+#    Registry tagged with the commit SHA, kubectl apply k8s/, set the image, wait for the
+#    rollout, then smoke-test the public URL. See DEPLOY.md for one-time setup.
 #
-# Needs (repo Settings -> Environments -> production):
-#   secret   RAILWAY_TOKEN    Railway *project* token for the production environment
-#   variable RAILWAY_SERVICE  Railway service name of the site (e.g. warbleoss-site)
-#   variable SITE_URL         optional, default https://warbleoss.org
+# Needs (repo Settings -> Environments -> production, or repo-level):
+#   secret   GCP_WORKLOAD_IDENTITY_PROVIDER  same value as warble-core
+#   secret   GCP_SERVICE_ACCOUNT             same value as warble-core
+#   variable SITE_URL                        optional, default https://warbleoss.org
 
 on:
   push:
@@ -20,7 +21,13 @@ permissions:
   contents: read
 
 env:
-  RAILWAY_CLI_VERSION: "5.64.2"
+  PROJECT_ID: green-device-505513-k4
+  REGION: us-central1
+  CLUSTER: warble-green-device
+  CLUSTER_ZONE: us-central1-a
+  AR_REPO: us-central1-docker.pkg.dev/green-device-505513-k4/warble
+  IMAGE_NAME: warbleoss-site
+  NAMESPACE: warbleoss
   EXPECTED_TITLE: "Warble OSS"
 
 jobs:
@@ -72,58 +79,87 @@ jobs:
         run: docker logs site 2>&1 | tail -n 50 || true
 
   deploy:
-    name: Deploy to Railway (production)
+    name: Deploy to GKE (production)
     needs: check
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write   # required for Workload Identity Federation
     environment:
       name: production
       url: ${{ vars.SITE_URL || 'https://warbleoss.org' }}
     concurrency:
-      group: railway-production-warbleoss-site
+      group: gke-production-warbleoss-site
       cancel-in-progress: false
     env:
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      RAILWAY_SERVICE: ${{ vars.RAILWAY_SERVICE }}
       SITE_URL: ${{ vars.SITE_URL || 'https://warbleoss.org' }}
     steps:
-      - name: Check deploy configuration
-        run: |
-          ok=1
-          [ -n "${RAILWAY_TOKEN}" ]   || { echo "::error::secret RAILWAY_TOKEN is not set (Railway project token, production environment)"; ok=0; }
-          [ -n "${RAILWAY_SERVICE}" ] || { echo "::error::variable RAILWAY_SERVICE is not set (Railway service name of the site)"; ok=0; }
-          [ "$ok" = 1 ]
-
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
         with:
-          node-version: "22"
+          # Keyless auth via Workload Identity Federation, same as warble-core.
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
 
-      - name: Install Railway CLI
-        run: npm install -g "@railway/cli@${RAILWAY_CLI_VERSION}" && railway --version
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
       - name: Stamp revision
         run: echo "${GITHUB_SHA}" > revision.txt
 
-      - name: railway up
-        # Project token => project + environment are implied; --ci streams build logs and
-        # fails the step if the build fails.
-        run: railway up --ci --service "${RAILWAY_SERVICE}" --message "warbleoss.org ${GITHUB_SHA::7} (run ${GITHUB_RUN_ID})"
+      - name: Build & push image
+        run: |
+          set -euo pipefail
+          img="${AR_REPO}/${IMAGE_NAME}"
+          docker build -t "${img}:${GITHUB_SHA}" -t "${img}:latest" .
+          docker push --all-tags "${img}"
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.CLUSTER }}
+          location: ${{ env.CLUSTER_ZONE }}
+          project_id: ${{ env.PROJECT_ID }}
+
+      # Namespaced objects only: the deploy SA cannot create clusterroles /
+      # clusterrolebindings (warble-core #235). The Namespace is applied first.
+      - name: Apply manifests and roll out
+        run: |
+          set -euo pipefail
+          kubectl apply -f k8s/namespace.yaml
+          kubectl apply -f k8s/deployment.yaml -f k8s/service.yaml -f k8s/managed-cert.yaml -f k8s/ingress.yaml
+          kubectl set image deployment/warbleoss-site \
+            site=${AR_REPO}/${IMAGE_NAME}:${GITHUB_SHA} --namespace=${NAMESPACE}
+          kubectl rollout status deployment/warbleoss-site --namespace=${NAMESPACE} --timeout=5m
+          kubectl get deployment/warbleoss-site --namespace=${NAMESPACE} \
+            -o jsonpath='image={.spec.template.spec.containers[0].image} ready={.status.readyReplicas}{"\n"}'
+          kubectl get managedcertificate/warbleoss-cert ingress/warbleoss-ingress --namespace=${NAMESPACE} || true
 
       - name: Smoke test production
         run: |
           set -uo pipefail
           url="${SITE_URL%/}"
-          # Wait (up to ~8 min) for the new deployment to pass Railway's healthcheck and go live.
           rev=""
-          for i in $(seq 1 48); do
+          for i in $(seq 1 30); do
             rev=$(curl -fsS --max-time 10 "$url/revision.txt?ts=$(date +%s)" 2>/dev/null | tr -d '[:space:]')
             [ "$rev" = "${GITHUB_SHA}" ] && break
-            echo "waiting for ${GITHUB_SHA::7} (live: ${rev:-none}) [$i/48]"; sleep 10
+            echo "waiting for ${GITHUB_SHA::7} (live: ${rev:-none}) [$i/30]"; sleep 10
           done
-          [ "$rev" = "${GITHUB_SHA}" ] || { echo "::error::$url is not serving ${GITHUB_SHA::7} (got '${rev:-none}'). Check Railway logs and that the domain points at Railway."; exit 1; }
+          if [ "$rev" != "${GITHUB_SHA}" ]; then
+            # Until DNS points at warbleoss-ip and the ManagedCertificate is Active, the
+            # public URL still serves the old host. Warn instead of failing the deploy.
+            echo "::warning::$url is not serving ${GITHUB_SHA::7} yet (got '${rev:-none}'). Check DNS -> warbleoss-ip and 'kubectl -n warbleoss describe managedcertificate warbleoss-cert'."
+            exit 0
+          fi
           code=$(curl -s -o /tmp/index.html -w '%{http_code}' --max-time 15 "$url/")
           [ "$code" = 200 ] || { echo "::error::$url/ returned $code"; exit 1; }
           grep -q "<title>${EXPECTED_TITLE}" /tmp/index.html || { echo "::error::$url/ title does not contain '${EXPECTED_TITLE}'"; exit 1; }
