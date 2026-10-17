@@ -1,0 +1,73 @@
+# One-shot Job: upsert A records for warbleoss.org and www.warbleoss.org to the
+# GKE ingress IP via the Cloudflare API. Apply manually (see README.md).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cloudflare-dns-sync
+  namespace: warbleoss
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      serviceAccountName: cloudflare-dns-sync
+      restartPolicy: OnFailure
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: sync
+          image: alpine/k8s:1.30.4
+          env:
+            - name: EXPECTED_ZONE
+              value: "warbleoss.org"
+            - name: HOSTS
+              value: "warbleoss.org www.warbleoss.org"
+            - name: PROXIED
+              value: "false"   # grey cloud until warbleoss-cert is Active
+            - name: CF_ZONE_ID
+              valueFrom: { secretKeyRef: { name: cloudflare-dns, key: CF_ZONE_ID } }
+            - name: CF_API_TOKEN
+              valueFrom: { secretKeyRef: { name: cloudflare-dns, key: CF_API_TOKEN } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { cpu: 100m, memory: 64Mi }
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              api=https://api.cloudflare.com/client/v4
+              auth="Authorization: Bearer ${CF_API_TOKEN}"
+              zone_name=$(curl -fsS -H "$auth" "$api/zones/${CF_ZONE_ID}" | jq -r .result.name)
+              if [ "$zone_name" != "$EXPECTED_ZONE" ]; then
+                echo "zone ${CF_ZONE_ID} is '$zone_name', expected '$EXPECTED_ZONE'. Refusing to write." >&2
+                exit 1
+              fi
+              ip=""
+              for i in $(seq 1 60); do
+                ip=$(kubectl -n warbleoss get ingress warbleoss-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}' || true)
+                [ -n "$ip" ] && break
+                echo "waiting for ingress IP ($i/60)"; sleep 10
+              done
+              [ -n "$ip" ] || { echo "ingress has no IP" >&2; exit 1; }
+              for host in $HOSTS; do
+                body=$(jq -nc --arg n "$host" --arg c "$ip" --argjson p "$PROXIED" '{type:"A",name:$n,content:$c,ttl:1,proxied:$p}')
+                ids=$(curl -fsS -H "$auth" "$api/zones/${CF_ZONE_ID}/dns_records?name=${host}" | jq -r '.result[] | select(.type=="A" or .type=="AAAA" or .type=="CNAME") | .id + " " + .type')
+                a_id=$(echo "$ids" | awk '$2=="A"{print $1; exit}')
+                # Remove conflicting CNAME/AAAA left over from the Railway setup.
+                echo "$ids" | awk '$2!="A" && $1!=""{print $1}' | while read -r rid; do
+                  curl -fsS -X DELETE -H "$auth" "$api/zones/${CF_ZONE_ID}/dns_records/$rid" >/dev/null
+                  echo "deleted old record $rid for $host"
+                done
+                if [ -n "$a_id" ]; then
+                  curl -fsS -X PUT -H "$auth" -H "Content-Type: application/json" -d "$body" "$api/zones/${CF_ZONE_ID}/dns_records/$a_id" >/dev/null
+                  echo "updated $host -> $ip (proxied=$PROXIED)"
+                else
+                  curl -fsS -X POST -H "$auth" -H "Content-Type: application/json" -d "$body" "$api/zones/${CF_ZONE_ID}/dns_records" >/dev/null
+                  echo "created $host -> $ip (proxied=$PROXIED)"
+                fi
+              done

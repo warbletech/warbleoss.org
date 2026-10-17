@@ -1,0 +1,31 @@
+# Namespaced only: lets the DNS sync Job read the ingress address.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cloudflare-dns-sync
+  namespace: warbleoss
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cloudflare-dns-sync
+  namespace: warbleoss
+rules:
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    resourceNames: ["warbleoss-ingress"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cloudflare-dns-sync
+  namespace: warbleoss
+subjects:
+  - kind: ServiceAccount
+    name: cloudflare-dns-sync
+    namespace: warbleoss
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cloudflare-dns-sync
