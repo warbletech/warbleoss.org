@@ -59,4 +59,5 @@ probes and the GCE load-balancer health check, and runs as `nobody`.
       `kubectl -n warbleoss get managedcertificate warbleoss-cert` shows `Active`.
       Google has to reach the origin directly to issue the cert, which can take 15–60 min.
       After that you can turn on proxying with SSL mode Full (strict).
+- [ ] **Cloudflare DNS automation (optional).** `k8s/cloudflare-dns/` has a one-shot Job that upserts the A records to the ingress IP via the Cloudflare API. Apply it by hand; see its README. Use the warbleoss.org zone ID, not `cloudflare-zone-id-frakma`.
 - [ ] **Decommission Railway** once the GKE site is live.
