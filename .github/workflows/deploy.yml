@@ -63,7 +63,13 @@ jobs:
       - name: Smoke the container
         run: |
           set -euo pipefail
-          docker run -d --name site -e PORT=9000 -p 9000:9000 warbleoss-site:ci
+          # Match k8s/deployment.yaml: nobody, all caps dropped, no new privileges.
+          # The upstream Caddy file capability otherwise fails exec with EPERM.
+          docker run -d --name site \
+            --user 65534:65534 \
+            --cap-drop ALL \
+            --security-opt no-new-privileges \
+            -e PORT=9000 -p 9000:9000 warbleoss-site:ci
           for _ in $(seq 1 30); do curl -fsS -o /dev/null http://127.0.0.1:9000/healthz && break; sleep 1; done
           curl -fsS http://127.0.0.1:9000/healthz | grep -qx ok
           curl -fsS http://127.0.0.1:9000/ | grep -q "<title>${EXPECTED_TITLE}"
