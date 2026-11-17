@@ -7,8 +7,14 @@ COPY Caddyfile /etc/caddy/Caddyfile
 COPY index.html 404.html revision.txt /srv/
 COPY assets/ /srv/assets/
 
-# Fail the build on a bad Caddyfile; run as an unprivileged user.
+# Fail the build on a bad Caddyfile. The upstream image sets
+# cap_net_bind_service on /usr/bin/caddy. This site listens on 8080, and
+# that file capability makes execve return EPERM when the pod sets
+# allowPrivilegeEscalation: false. Strip it; do not weaken the pod policy.
 RUN caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile \
+ && setcap -r /usr/bin/caddy \
+ && caps="$(getcap /usr/bin/caddy || true)" \
+ && if [ -n "$caps" ]; then echo "caddy still has file capabilities: $caps" >&2; exit 1; fi \
  && chown -R nobody:nobody /data /config
 
 ENV PORT=8080
