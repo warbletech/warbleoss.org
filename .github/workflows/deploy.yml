@@ -73,6 +73,12 @@ jobs:
           for _ in $(seq 1 30); do curl -fsS -o /dev/null http://127.0.0.1:9000/healthz && break; sleep 1; done
           curl -fsS http://127.0.0.1:9000/healthz | grep -qx ok
           curl -fsS http://127.0.0.1:9000/ | grep -q "<title>${EXPECTED_TITLE}"
+          # www must be served on HTTP while warbleoss-cert is provisioning.
+          # Expect 200, not a redirect to https://warbleoss.org.
+          code=$(curl -s -o /tmp/www.html -D /tmp/www.hdr -w '%{http_code}' -H 'Host: www.warbleoss.org' http://127.0.0.1:9000/)
+          if [ "$code" != 200 ] || grep -qi '^location:' /tmp/www.hdr || ! grep -q "<title>${EXPECTED_TITLE}" /tmp/www.html; then
+            echo "::error::www host must return 200 with the site title during cert provisioning (got $code)"; exit 1
+          fi
           curl -fsS -o /dev/null http://127.0.0.1:9000/assets/heron-ops-logo.jpg
           code=$(curl -s -o /tmp/nf.html -w '%{http_code}' http://127.0.0.1:9000/no-such-page)
           if [ "$code" != 404 ] || ! grep -q 'Not found' /tmp/nf.html; then echo "::error::404 page broken ($code)"; exit 1; fi

@@ -13,9 +13,12 @@
 	# k8s readiness/liveness probes, GCE LB health check and CI smoke tests.
 	respond /healthz "ok" 200
 
-	# Optional: if www.warbleoss.org is attached to this service, send it to the apex.
-	@www host www.warbleoss.org
-	redir @www https://warbleoss.org{uri} permanent
+	# Serve www on HTTP, same as the apex, until ManagedCertificate warbleoss-cert
+	# is Active for www.warbleoss.org. A port-80 redirect to https://warbleoss.org
+	# makes Google's visibility check report FailedNotVisible. Restore after both
+	# names are Active:
+	# @www host www.warbleoss.org
+	# redir @www https://warbleoss.org{uri} permanent
 
 	header {
 		X-Content-Type-Options nosniff
