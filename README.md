@@ -20,6 +20,7 @@ and Starling EX Community.
 | Foundations             | CNCF vs LF table (honest status language)                              |
 | Path to CNCF            | Readiness checklist + Sandbox → Graduation steps                       |
 | Community               | [Discord](https://discord.gg/kAfR57mVDX) Office Hours + community repo |
+| Blog                    | Token economics, agent platforms, and open foundations                 |
 | Support                 | Contribute now · LFX Crowdfunding later · Enterprise                   |
 
 ## Repository layout
@@ -27,9 +28,10 @@ and Starling EX Community.
 ```text
 index.html        landing page
 404.html          not-found page
-assets/           logos
+blog/             HTML posts plus Markdown sources (only *.html is copied into the image)
+assets/           logos and blog.css
 Caddyfile         static server config (site image)
-Dockerfile        site image: Caddy + index.html, 404.html, assets/ only
+Dockerfile        site image: Caddy + index.html, 404.html, assets/, blog/*.html
 k8s/              GKE manifests (namespace, deployment, service, cert, ingress)
 revision.txt      deployed commit (stamped by CD; "dev" in git)
 repos/            flock repositories as git submodules (not checked out in CI)

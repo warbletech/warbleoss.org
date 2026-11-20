@@ -1,11 +1,12 @@
 # warbleoss.org — static site image for GKE (see k8s/).
 #   docker build -t warbleoss-site . && docker run --rm -p 8080:8080 warbleoss-site
-# Only the public site files are copied in; README, docs and repos/ never ship.
+# Only the public site files are copied in; README, docs, blog sources (.md) and repos/ never ship.
 FROM caddy:2.11.7-alpine@sha256:d8542f48d34a9cf4e4c11a478865229840e87e4c96ea3f439101f31a5d35f75f
 
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY index.html 404.html revision.txt /srv/
 COPY assets/ /srv/assets/
+COPY blog/*.html /srv/blog/
 
 # Fail the build on a bad Caddyfile. The upstream image sets
 # cap_net_bind_service on /usr/bin/caddy. This site listens on 8080, and

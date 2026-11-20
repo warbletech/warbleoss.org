@@ -5,3 +5,6 @@
 !404.html
 !revision.txt
 !assets/
+!blog/
+!blog/*.html
+blog/*.md

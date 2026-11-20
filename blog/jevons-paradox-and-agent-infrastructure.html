@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jevons Paradox: Why Cheaper Tokens Mean More Agent Infrastructure — Warble OSS</title>
+  <meta name="description" content="Falling token prices tend to raise total demand. What that means for the Kubernetes platform that has to absorb agent workloads." />
+  <link rel="canonical" href="https://warbleoss.org/blog/jevons-paradox-and-agent-infrastructure.html" />
+  <meta property="og:title" content="Jevons Paradox: Why Cheaper Tokens Mean More Agent Infrastructure" />
+  <meta property="og:description" content="Falling token prices tend to raise total demand. What that means for the Kubernetes platform that has to absorb agent workloads." />
+  <meta property="og:url" content="https://warbleoss.org/blog/jevons-paradox-and-agent-infrastructure.html" />
+  <meta property="og:type" content="article" />
+  <link rel="icon" href="/assets/heron-ops-logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/blog.css" />
+</head>
+<body>
+  <div class="banner">
+    <strong>Starling EX Community</strong> — planning <strong>CNCF</strong> donation (Sandbox path)
+    · <strong>Frakma-X</strong> — Linux Foundation wing for platform / LLMOps
+  </div>
+
+  <header>
+    <a class="logo" href="/">Warble OSS</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog/" aria-current="page">Blog</a>
+      <a href="/#foundations">Foundations</a>
+      <a href="/#cncf">CNCF path</a>
+      <a href="https://github.com/warbletech/warble-army">GitHub</a>
+    </nav>
+  </header>
+
+  <article class="post">
+    <h1>Jevons Paradox: Why Cheaper Tokens Mean More Agent Infrastructure</h1>
+    <p class="meta">Avinash Patil, founder of Warble Cloud · 20 November 2026</p>
+    <p class="series-note">This post is part of a short series drawing on open work from the <a href="https://www.tokeneconomics.com/">Tokenomics Foundation</a>. The frameworks are theirs; the application to Warble is ours. See also the <a href="/blog/">other posts in the series</a>.</p>
+    <p>When a resource gets cheaper to use, people often use more of it — sometimes enough more that total spend goes up, not down. William Stanley Jevons made the observation about coal in the nineteenth century. The <a href="https://www.tokeneconomics.com/what-is-ai-tokenomics/#term-jevons-paradox">Tokenomics Foundation</a> applies the same pattern to AI tokens: efficiency that lowers unit cost can raise total consumption and total spend. In their words, this is already visible in AI, where falling token prices have accompanied rising total spend.</p>
+<p>That is not an argument against efficiency. It is a warning about what efficiency does to demand, and therefore to the platform that has to absorb it.</p>
+<p>At Warble we sell and operate agentic systems: agents that plan, call tools, critique their own work, and call models again. If tokens get cheaper, those systems will be asked to do more, by more users, with more tools attached. The bill that grows is only partly the model invoice. The rest shows up as Kubernetes capacity, gateways, caches, evaluation jobs, observability, and the people who keep that path reliable. Cheaper tokens do not shrink that surface. They enlarge it.</p>
+<h2>Tokens are where the conversation starts, not where it ends</h2>
+<p>The Foundation&rsquo;s working definition of AI tokenomics, draft v0.5.2 (1 September 2026), is the discipline of converting energy and capital into AI capabilities and consuming that intelligence in a way that produces measurable business value. Their shorthand is &ldquo;energy to intelligence to value.&rdquo; They are careful to separate this from the cryptocurrency sense of the word: here, a token is the atomic unit of AI.</p>
+<p>They are also careful about proportion. In enterprise conversations, token costs are typically 10 to 25 percent of the total cost of AI. The rest — what they call total cost of AI — includes orchestration, agent loops, memory, retrieval, evaluations, governance, data, and labour. Labour appears twice: once to build and run the system, and again in the staffing changes the system causes.</p>
+<p>That range is the Foundation&rsquo;s, not a Warble measurement, and we should not pretend we have a more precise split until we can show one. The useful implication is already clear. A team that only watches the model invoice is watching a minority of the cost, and usually the easiest minority to meter. The rest hides in platform software and in human time.</p>
+<p>Their related point about value is just as important. Cost per token measures production efficiency. It is a poor value metric, because models do not use the same number of tokens to finish the same task. Cost per task is closer to ordinary unit economics. Cost per outcome asks whether the work held up, including the failed attempts. A cheaper token that funds a longer agent loop can raise cost per outcome.</p>
+<h2>Why demand grows faster than price falls</h2>
+<p>The <a href="https://www.tokeneconomics.com/projects/big-t-notation-paper/">Big-T paper</a> describes four demand waves that stack rather than replace each other. More capable models often consume more tokens per task, especially when reasoning and tool use are involved. Larger context windows make it easy to send more than the task needs. Agentic designs turn one prompt into many model calls. And adoption adds users, use cases and agents to the baseline.</p>
+<p>Several of those multipliers never show up in a simple forecast of &ldquo;users × requests × tokens per request.&rdquo; Hidden reasoning tokens, a cache miss rate, retries, and a supervisor that fans out to sub-agents all rewrite the number. The Foundation&rsquo;s tokenomics overview makes the same point: each efficiency gain has so far unlocked new demand rather than reducing it.</p>
+<p>This is Jevons in operational form. A price cut, a faster model, or a better cache does not automatically reduce the platform bill. It often changes what people are willing to ask the system to do. An agent that was too expensive to run on every ticket becomes cheap enough to try, and then cheap enough to leave on. &ldquo;Tokenmaxing&rdquo; — the habit, named in the Foundation&rsquo;s glossary, of sending every task to the most powerful model because tokens felt free — is one failure mode. The quieter one is leaving every new agent on the most expensive path because no one set a class or a ceiling.</p>
+<h2>What this means for a platform team</h2>
+<p>If you run the cluster that hosts the agents, Jevons shows up as infrastructure pressure, not as a pricing slide.</p>
+<p>More agent traffic means more north-south connections, more long-lived streams, more tool calls out to MCP servers, and more internal service-to-service traffic. It means caches and memory that have to be sized for the miss path, not the happy path. It means evaluation and tracing volume that grows with autonomy, because a multiplicative workload that you cannot inspect is a production risk. It also means identity, rate limits and budgets have to sit in front of the models, or a single loop will consume an unbounded share of the month.</p>
+<p>We have already felt a narrower version of this in our own Kubernetes platforms: the scarce resource was not always GPU time. External IP quota, CPU requested by idle add-ons, and ingress sprawl can stall work that has nothing to do with a model. Those are Total Cost of AI items. They are also the reason we want a smaller, more deliberate platform — one Gateway API ingress, a focused AI gateway, and a mesh only where we need L7 policy — rather than a new controller for every experiment.</p>
+<p>The platform response to Jevons is therefore not &ldquo;use a cheaper model&rdquo; as a first principle. It is:</p>
+<ol>
+<li><strong>Instrument demand</strong>, so you can see tokens, fan-out, retries and cache hits per route, per agent and per customer.</li>
+<li><strong>Put a ceiling on autonomy</strong>, so T(n·k·a) workloads cannot become unbounded. Budgets and kill switches belong in the gateway, not in a wiki.</li>
+<li><strong>Right-size the path</strong>, not only the model: retrieval and filtering before the prompt, composable tools so context is not replayed, caches for the stable prefix, and a model tier that matches the task.</li>
+<li><strong>Provision for the multiplier</strong>, including the non-token parts of the bill: the cluster, the database, the queue, the eval jobs, and the on-call time.</li>
+<li><strong>Price from outcomes where you can</strong>, so a drop in unit token price does not silently destroy the margin on a pay-as-you-go product.</li>
+</ol>
+<p>That last point is a product decision, not only a FinOps one. If we meter tokens at <a href="https://aaif.io/projects">agentgateway</a> and feed a credit ledger, we still have to decide whether the customer is buying tokens, tasks, or outcomes. Tokens are the unit we can count most reliably today. They should not be the only unit we use to judge whether the system is earning its keep.</p>
+<h2>Efficiency still matters</h2>
+<p>None of this is a case for wasting tokens. The Foundation&rsquo;s conclusion in the Big-T work is that organisations which treat tokens as an undifferentiated commodity will be surprised by the bill and unable to trace it to value — the same place many companies landed after moving to the cloud without cost governance. We agree, and we would add the platform corollary: organisations that treat agent infrastructure as an undifferentiated commodity will be surprised by quota, latency and toil, even if the model invoice looks tidy.</p>
+<p>Cheaper tokens are a gift, and they will keep arriving. The work is to receive that gift without letting demand write cheques the architecture cannot cash. For a team that runs agents on Kubernetes, that is mostly unglamorous engineering: classify the workload, meter it, cap it, and keep the cluster small enough that the non-token majority of the AI bill stays visible.</p>
+<h2>Further reading</h2>
+<ul>
+<li>Tokenomics Foundation, <a href="https://www.tokeneconomics.com/what-is-ai-tokenomics/">What Is AI Tokenomics?</a>, including the <a href="https://www.tokeneconomics.com/what-is-ai-tokenomics/#term-jevons-paradox">Jevons paradox</a> entry. Draft definition v0.5.2, 1 September 2026.</li>
+<li>Dan Neff, <a href="https://www.tokeneconomics.com/projects/big-t-notation-paper/">Big-T Notation Paper</a>, Tokenomics Foundation, in particular the compounding-demand thesis and the closing discussion of Jevons.</li>
+<li>Linux Foundation, <a href="https://www.linuxfoundation.org/press/linux-foundation-launches-the-tokenomics-foundation-to-define-the-economics-and-roi-of-ai-value">Tokenomics Foundation launch</a>, 4 August 2026.</li>
+</ul>
+    <p class="post-nav"><a href="/blog/">← All posts</a></p>
+  </article>
+
+  <footer>
+    © ChirpStack LLP / Warble · Open source under Apache-2.0 (per component)
+    · <a href="https://github.com/warbletech/warble-army">warble-army</a>
+    · Demo: <a href="https://mcp.warbleoss.org">mcp.warbleoss.org</a>
+    · <a href="https://warblecloud.com">warblecloud.com</a>
+  </footer>
+</body>
+</html>
