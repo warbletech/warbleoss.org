@@ -113,7 +113,8 @@ curl -s localhost:8080/healthz   # ok
 
 See [CNCF.md](CNCF.md) for the CNCF Sandbox readiness checklist and steps.
 Warble Cloud is a Linux Foundation member and an Agentic AI Foundation (AAIF)
-Silver member.
+Silver member, and a Core Tech Member in Taxonomy, Observability, Governance,
+and Tech Speaker.
 
 ## Contributing
 

@@ -8,7 +8,9 @@ Oversight Committee (TOC) votes to accept it and a Contribution Agreement is
 signed.
 
 Warble Cloud is a **Linux Foundation member** and an
-**[Agentic AI Foundation (AAIF)](https://aaif.io) Silver member**. AAIF is the
+**[Agentic AI Foundation (AAIF)](https://aaif.io) Silver member**, and a
+**Core Tech Member in Taxonomy, Observability, Governance, and Tech Speaker**.
+AAIF is the
 Linux Foundation home of the Model Context Protocol (MCP) that our tools speak.
 
 _Last reviewed: 2026-10-11._
