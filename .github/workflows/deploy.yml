@@ -40,10 +40,12 @@ jobs:
       - name: Stage site files (exactly what the image serves)
         run: |
           set -euo pipefail
-          mkdir -p _site
+          mkdir -p _site/blog
           cp index.html 404.html revision.txt _site/
           cp -r assets _site/
+          cp blog/*.html _site/blog/
           test -s _site/index.html && test -s _site/404.html
+          test -s _site/blog/index.html
           grep -q "<title>${EXPECTED_TITLE}" _site/index.html
           find _site -type f | sort
 
@@ -54,7 +56,7 @@ jobs:
           while IFS= read -r ref; do
             [ "$ref" = "/" ] && continue
             [ -e "_site/${ref#/}" ] || { echo "::error::broken local link: $ref"; missing=1; }
-          done < <(grep -hoE '(href|src)="[^"#?]+' _site/*.html | sed -E 's/^(href|src)="//' | grep -vE '^(https?:|mailto:|//|data:)' | sort -u)
+          done < <(grep -hoRE '(href|src)="[^"#?]+' _site --include='*.html' | sed -E 's/^(href|src)="//' | grep -vE '^(https?:|mailto:|//|data:)' | sort -u)
           exit $missing
 
       - name: Build image
@@ -74,6 +76,9 @@ jobs:
           curl -fsS http://127.0.0.1:9000/healthz | grep -qx ok
           curl -fsS http://127.0.0.1:9000/ | grep -q "<title>${EXPECTED_TITLE}"
           curl -fsS -o /dev/null http://127.0.0.1:9000/assets/heron-ops-logo.jpg
+          curl -fsS http://127.0.0.1:9000/blog/ | grep -q "<title>Blog"
+          curl -fsS http://127.0.0.1:9000/blog/big-t-notation-for-agent-workloads.html | grep -q "Big-T Notation"
+          curl -fsS -o /dev/null http://127.0.0.1:9000/assets/blog.css
           code=$(curl -s -o /tmp/nf.html -w '%{http_code}' http://127.0.0.1:9000/no-such-page)
           if [ "$code" != 404 ] || ! grep -q 'Not found' /tmp/nf.html; then echo "::error::404 page broken ($code)"; exit 1; fi
           code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:9000/README.md)

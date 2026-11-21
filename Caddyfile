@@ -23,7 +23,7 @@
 		X-Frame-Options DENY
 		-Server
 	}
-	@pages path / *.html /revision.txt
+	@pages path / *.html /blog /blog/* /revision.txt
 	header @pages Cache-Control "no-cache"
 	header /assets/* Cache-Control "public, max-age=604800"
 

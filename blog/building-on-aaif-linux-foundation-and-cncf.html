@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Building on AAIF, the Linux Foundation, and CNCF — Warble OSS</title>
+  <meta name="description" content="Why Warble builds on AAIF protocols, Linux Foundation membership, and CNCF — and the claims we will not make." />
+  <link rel="canonical" href="https://warbleoss.org/blog/building-on-aaif-linux-foundation-and-cncf.html" />
+  <meta property="og:title" content="Building on AAIF, the Linux Foundation, and CNCF" />
+  <meta property="og:description" content="Why Warble builds on AAIF protocols, Linux Foundation membership, and CNCF — and the claims we will not make." />
+  <meta property="og:url" content="https://warbleoss.org/blog/building-on-aaif-linux-foundation-and-cncf.html" />
+  <meta property="og:type" content="article" />
+  <link rel="icon" href="/assets/heron-ops-logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/blog.css" />
+</head>
+<body>
+  <div class="banner">
+    <strong>Starling EX Community</strong> — planning <strong>CNCF</strong> donation (Sandbox path)
+    · <strong>Frakma-X</strong> — Linux Foundation wing for platform / LLMOps
+  </div>
+
+  <header>
+    <a class="logo" href="/">Warble OSS</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog/" aria-current="page">Blog</a>
+      <a href="/#foundations">Foundations</a>
+      <a href="/#cncf">CNCF path</a>
+      <a href="https://github.com/warbletech/warble-army">GitHub</a>
+    </nav>
+  </header>
+
+  <article class="post">
+    <h1>Building on AAIF, the Linux Foundation, and CNCF</h1>
+    <p class="meta">Avinash Patil, founder of Warble Cloud · 20 November 2026</p>
+    <p class="series-note">This post is part of a short series drawing on open work from the <a href="https://www.tokeneconomics.com/">Tokenomics Foundation</a>. The frameworks are theirs; the application to Warble is ours. See also the <a href="/blog/">other posts in the series</a>.</p>
+    <p>Agent platforms are starting to look like the early cloud: every vendor has a private way to connect models to tools, to let agents talk to each other, and to run the work on a cluster. That is fine for a prototype. It is a poor foundation for a product that customers have to trust for more than one quarter.</p>
+<p>Warble is a small company. We cannot, and should not, define the protocols the industry will use. What we can do is build on the ones that already have neutral homes, contribute where we have a sharp edge, and be honest about what we have not done yet. That is why we spend time with three Linux Foundation family organisations: the <a href="https://aaif.io/">Agentic AI Foundation</a> (AAIF), the Linux Foundation itself, and the <a href="https://www.cncf.io/">Cloud Native Computing Foundation</a> (CNCF).</p>
+<p>This is not a membership brochure. It is an account of which standards we are building on, and why that choice is technical rather than decorative.</p>
+<h2>AAIF: a neutral home for agent protocols</h2>
+<p>The Linux Foundation <a href="https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation">announced AAIF on 9 December 2025</a>, with three founding project contributions: Anthropic&rsquo;s Model Context Protocol (MCP), Block&rsquo;s goose, and OpenAI&rsquo;s AGENTS.md. The point of the foundation, as that announcement put it, is to give agentic AI a vendor-neutral place to evolve.</p>
+<p>Those first projects cover different layers of the same problem. MCP is the protocol for connecting model applications to tools and data. goose is an open, local-first agent that uses those tools. AGENTS.md is a simple, repository-level convention so coding agents can find the guidance they need to work in a given codebase. We use MCP in our open work today: Heron Ops is a Kubernetes MCP server, and the community endpoint at <a href="https://mcp.warbleoss.org">mcp.warbleoss.org</a> is there so people can try the protocol against a live service, not only a specification.</p>
+<p>AAIF&rsquo;s project list has grown since launch. On 22 October 2026 the foundation <a href="https://www.linuxfoundation.org/press/agentic-ai-foundation-announces-four-new-projects-agent-skills-open-responses-openenv-and-opensandbox">announced four new projects</a> — Agent Skills, Open Responses, OpenEnv and OpenSandbox — and noted that it now hosts ten projects, with 305 member organisations. The earlier arrivals in that set include the Agent2Agent (A2A) protocol, Agent Router, and <a href="https://aaif.io/projects">agentgateway</a>. We care about those three in particular. A2A is how we want agents to collaborate across products without a private handshake. agentgateway is the open gateway we are using as the control point for model, MCP and A2A traffic, including the token metering that should feed usage-based billing.</p>
+<p>Building on these projects is a product decision. If a customer can attach the same MCP server to our agents and to someone else&rsquo;s, they are less trapped. If our gateway speaks the same protocols, we can spend our engineering time on policy, attribution and Kubernetes operations rather than on a one-off RPC dialect. That is the practical meaning of &ldquo;open standards&rdquo; for a company our size.</p>
+<h2>The Linux Foundation, and what membership is not</h2>
+<p>AAIF sits under the Linux Foundation. <a href="https://aaif.io/members">AAIF membership</a> requires Linux Foundation membership at some level; Silver dues are based on headcount, and the AAIF charter does not give Silver members a Governing Board seat or governance vote by right. Participation is still useful: working groups, office hours, a seat on the outreach committee, and a small number of vendor-neutral blog posts each year, subject to editorial review.</p>
+<p>Warble Cloud is a Linux Foundation member and an AAIF Silver member, as we already state on <a href="https://warbleoss.org/#cncf">warbleoss.org</a>. We should keep that statement exact. We are not a Platinum member, we do not sit on the AAIF Governing Board, and Silver membership is not a substitute for technical contribution. The valuable work is in the projects: using MCP and A2A as specified, running agentgateway, filing issues, and writing down what broke when we put those pieces on a cluster.</p>
+<p>The Linux Foundation is also the host of the <a href="https://www.linuxfoundation.org/press/linux-foundation-launches-the-tokenomics-foundation-to-define-the-economics-and-roi-of-ai-value">Tokenomics Foundation</a>, launched on 4 August 2026. The three earlier posts in this series draw on that body&rsquo;s language for token cost and demand. It is a reminder that &ldquo;the LF family&rdquo; is broader than a single foundation logo. Agent protocols, cloud-native runtimes, and the economics of tokens are being standardised in adjacent rooms. We need all three.</p>
+<h2>CNCF: the runtime, and conformance as a discipline</h2>
+<p>If AAIF is where agent protocols should live, CNCF is where the runtime already lives. Our open flock — ShrikeOps, Heron Ops, and Starling EX Community, grouped under <a href="https://github.com/warbletech/warble-army">warble-army</a> — is built for Kubernetes. We plan to propose that flock to CNCF as a Sandbox project. That is a plan, not a status. We do not call these CNCF projects, and we will not until the Technical Oversight Committee accepts a donation. The readiness work is public on warbleoss.org.</p>
+<p>CNCF is also running a programme that sits closer to the tokenomics and inference questions in this series. The <a href="https://github.com/cncf/k8s-ai-conformance">Kubernetes AI Conformance</a> programme defines a baseline of capabilities a Kubernetes platform should offer to run training, inference and agentic workloads portably. A platform has to be Kubernetes-conformant first. Submissions are pull requests against that repository, with a versioned checklist and evidence.</p>
+<p>We have not published a product conformance submission of our own, and we do not claim to be an AI-conformant platform. What we have done is contribute to the programme&rsquo;s plumbing. In <a href="https://github.com/cncf/k8s-ai-conformance/pull/131">cncf/k8s-ai-conformance#131</a>, merged on 29 October 2026, we changed the evidence-URL validator so that HTTP 429 responses are retried with backoff, honouring <code>Retry-After</code> where present, and reported as a warning if they persist, rather than failing a submission because a documentation host rate-limited the CI runner. It is a small change. It is also the kind of work that decides whether a conformance programme can be used in practice.</p>
+<p>The conformance checklists themselves are a useful design prompt even before anyone submits. They treat things like Gateway API for inference traffic, accelerator access, and (in later revisions) disaggregated serving as platform questions. That matches how we want to think about L2 and L3 of the tokenomics stack: not as application accidents, but as cluster capabilities you can describe and test.</p>
+<h2>What we will not claim</h2>
+<p>A few lines we will keep repeating, including to ourselves:</p>
+<ul>
+<li>We are an LF member and an AAIF Silver member. That is participation, not governance power, and not a certification of our software.</li>
+<li>MCP, A2A, AGENTS.md, agentgateway and the other AAIF projects are not &ldquo;Warble standards.&rdquo; We implement and, where we can, contribute.</li>
+<li>The warble-army flock is on a planned CNCF Sandbox path. It is not a CNCF project today.</li>
+<li>PR #131 is a validator fix, not a Warble AI conformance badge.</li>
+</ul>
+<p>Open governance is slower than a private repo, and that is the point. Protocols that agents, gateways and clusters share will outlast any one vendor&rsquo;s roadmap, including ours. The job for a company like Warble is to be a serious user of those protocols, a careful contributor, and a platform that makes the resulting systems operable — including the unfashionable part, which is measuring and capping what they cost.</p>
+<h2>Further reading</h2>
+<ul>
+<li>Linux Foundation, <a href="https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation">Formation of the Agentic AI Foundation</a>, 9 December 2025.</li>
+<li>Linux Foundation, <a href="https://www.linuxfoundation.org/press/agentic-ai-foundation-surpasses-300-members-in-less-than-one-year">AAIF surpasses 300 members</a> and <a href="https://www.linuxfoundation.org/press/agentic-ai-foundation-announces-four-new-projects-agent-skills-open-responses-openenv-and-opensandbox">four new AAIF projects</a>, 22 October 2026.</li>
+<li><a href="https://aaif.io/projects">AAIF projects</a> and <a href="https://aaif.io/members">membership</a>.</li>
+<li>CNCF, <a href="https://github.com/cncf/k8s-ai-conformance">Kubernetes AI Conformance</a>; <a href="https://github.com/cncf/k8s-ai-conformance/pull/131">PR #131</a>.</li>
+<li><a href="https://warbleoss.org/#cncf">warbleoss.org</a>, including our current CNCF path and membership wording.</li>
+</ul>
+    <p class="post-nav"><a href="/blog/">← All posts</a></p>
+  </article>
+
+  <footer>
+    © ChirpStack LLP / Warble · Open source under Apache-2.0 (per component)
+    · <a href="https://github.com/warbletech/warble-army">warble-army</a>
+    · Demo: <a href="https://mcp.warbleoss.org">mcp.warbleoss.org</a>
+    · <a href="https://warblecloud.com">warblecloud.com</a>
+  </footer>
+</body>
+</html>
