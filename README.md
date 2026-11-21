@@ -1,7 +1,8 @@
 # warbleoss.org
 
-Static site for **Warble OSS**, the open-source home of ShrikeOps, Heron Ops,
-and Starling EX Community.
+Static site for **Warble OSS**, the open-source home of **warble-flock**
+(ShrikeOps, Heron Ops, Starling-EX Community). The public umbrella repository
+is still [warbletech/warble-army](https://github.com/warbletech/warble-army).
 
 - **Live site:** <https://warbleoss.org> (GKE)
 - **Try MCP:** <https://mcp.warbleoss.org> (MCP endpoint `POST /mcp`,
@@ -14,7 +15,7 @@ and Starling EX Community.
 | Section                 | Purpose                                                                |
 | ----------------------- | ---------------------------------------------------------------------- |
 | Hero + foundation pills | CNCF Sandbox draft · Frakma-X LF wing                                  |
-| Flock cards             | ShrikeOps, Heron Ops, Starling EX Community                            |
+| Flock cards             | ShrikeOps, Heron Ops, Starling-EX Community                            |
 | Easy start              | Good-first repos for contributors                                      |
 | Try MCP / Install       | Live demo + Helm / local MCP                                           |
 | Foundations             | CNCF vs LF table (honest status language)                              |
