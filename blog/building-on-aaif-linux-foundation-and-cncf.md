@@ -23,7 +23,7 @@ Building on these projects is a product decision. If a customer can attach the s
 
 AAIF sits under the Linux Foundation. [AAIF membership](https://aaif.io/members) requires Linux Foundation membership at some level; Silver dues are based on headcount, and the AAIF charter does not give Silver members a Governing Board seat or governance vote by right. Participation is still useful: working groups, office hours, a seat on the outreach committee, and a small number of vendor-neutral blog posts each year, subject to editorial review.
 
-Warble Cloud is a Linux Foundation member and an AAIF Silver member, and a Core Tech Member in Taxonomy, Observability, Governance, and Tech Speaker, as we already state on [warbleoss.org](https://warbleoss.org/#cncf). We should keep that statement exact. We are not a Platinum member, we do not sit on the AAIF Governing Board, and Silver membership is not a substitute for technical contribution. The valuable work is in the projects: using MCP and A2A as specified, running agentgateway, filing issues, and writing down what broke when we put those pieces on a cluster.
+Warble Cloud is a Linux Foundation member and an AAIF Silver member, and a Core Tech Member of the AAIF working groups: Taxonomy & Landscape; Observability & Tracing (Agent State, Context, and Reasoning); Identity & Trust; Governance, Risk & Regulatory; and Agentic Commerce. AAIF Tech Speaker, as we already state on [warbleoss.org](https://warbleoss.org/#cncf). We should keep that statement exact. We are not a Platinum member, we do not sit on the AAIF Governing Board, and Silver membership is not a substitute for technical contribution. The valuable work is in the projects: using MCP and A2A as specified, running agentgateway, filing issues, and writing down what broke when we put those pieces on a cluster.
 
 The Linux Foundation is also the host of the [Tokenomics Foundation](https://www.linuxfoundation.org/press/linux-foundation-launches-the-tokenomics-foundation-to-define-the-economics-and-roi-of-ai-value), launched on 4 August 2026. The three earlier posts in this series draw on that body's language for token cost and demand. It is a reminder that "the LF family" is broader than a single foundation logo. Agent protocols, cloud-native runtimes, and the economics of tokens are being standardised in adjacent rooms. We need all three.
 
@@ -41,7 +41,7 @@ The conformance checklists themselves are a useful design prompt even before any
 
 A few lines we will keep repeating, including to ourselves:
 
-- We are an LF member and an AAIF Silver member, and a Core Tech Member in Taxonomy, Observability, Governance, and Tech Speaker. That is participation, not governance power.
+- We are an LF member and an AAIF Silver member, and a Core Tech Member of the AAIF working groups: Taxonomy & Landscape; Observability & Tracing (Agent State, Context, and Reasoning); Identity & Trust; Governance, Risk & Regulatory; and Agentic Commerce. AAIF Tech Speaker. That is participation, not governance power.
 - MCP, A2A, AGENTS.md, agentgateway and the other AAIF projects are not "Warble standards." We implement and, where we can, contribute.
 - The warble-army flock is on a planned CNCF Sandbox path. It is not a CNCF project today.
 - PR #131 is a validator fix, not a Warble AI conformance badge.

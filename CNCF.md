@@ -9,7 +9,7 @@ signed.
 
 Warble Cloud is a **Linux Foundation member** and an
 **[Agentic AI Foundation (AAIF)](https://aaif.io) Silver member**, and a
-**Core Tech Member in Taxonomy, Observability, Governance, and Tech Speaker**.
+**Core Tech Member of the AAIF working groups: Taxonomy & Landscape; Observability & Tracing (Agent State, Context, and Reasoning); Identity & Trust; Governance, Risk & Regulatory; and Agentic Commerce. AAIF Tech Speaker.**
 AAIF is the
 Linux Foundation home of the Model Context Protocol (MCP) that our tools speak.
 
