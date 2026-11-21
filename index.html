@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Warble OSS — Kubernetes agent ops, open source</title>
-  <meta name="description" content="Warble OSS: ShrikeOps, Heron Ops, and Starling EX Community. Scan, observe, remediate Kubernetes with MCP agents. Planning CNCF donation; Frakma-X is our Linux Foundation wing." />
+  <meta name="description" content="Warble OSS: warble-flock (ShrikeOps, Heron Ops, Starling-EX Community). Scan, observe, remediate Kubernetes with MCP agents. Planning CNCF donation; Frakma-X is our Linux Foundation wing." />
   <link rel="canonical" href="https://warbleoss.org/" />
   <meta property="og:title" content="Warble OSS" />
-  <meta property="og:description" content="Open flock of Kubernetes agent ops — ShrikeOps, Heron Ops, Starling EX Community. Planned CNCF path · Frakma-X LF wing." />
+  <meta property="og:description" content="Open flock of Kubernetes agent ops — warble-flock (ShrikeOps, Heron Ops, Starling-EX Community). Planned CNCF path · Frakma-X LF wing." />
   <meta property="og:url" content="https://warbleoss.org/" />
   <meta property="og:type" content="website" />
   <link rel="icon" href="assets/heron-ops-logo.jpg" />
@@ -52,6 +52,14 @@
       letter-spacing: -0.02em;
       text-decoration: none;
       color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .logo img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
     }
     nav {
       display: flex;
@@ -277,12 +285,12 @@
 </head>
 <body>
   <div class="banner">
-    <strong>Starling EX Community</strong> — planning <strong>CNCF</strong> donation (Sandbox path)
+    <strong>warble-flock</strong> — planning <strong>CNCF</strong> donation (Sandbox path)
     · <strong>Frakma-X</strong> — Linux Foundation wing for platform / LLMOps
   </div>
 
   <header>
-    <a class="logo" href="/">Warble OSS</a>
+    <a class="logo" href="/"><img src="assets/logo-warbleoss.png" alt="" width="28" height="28" />Warble OSS</a>
     <nav>
       <a href="#flock">Flock</a>
       <a href="#start">Easy start</a>
@@ -301,7 +309,7 @@
     <h1>Open-source Kubernetes agent ops</h1>
     <p class="lead">
       Scan with <strong>ShrikeOps</strong>. Observe with <strong>Heron Ops</strong>.
-      Coordinate with <strong>Starling EX Community</strong>.
+      The open flock is <strong>warble-flock</strong> (formerly Warble Army): ShrikeOps, Heron Ops, and Starling-EX Community.
       Birds of a feather — self-hosted, no lock-in. Adapt and extend the flock under Apache-2.0.
     </p>
     <div class="pills" aria-label="Foundation status">
@@ -319,7 +327,7 @@
     </div>
     <div class="cta">
       <a class="btn btn-demo" href="#try">Try MCP live →</a>
-      <a class="btn btn-primary" href="https://github.com/warbletech/warble-army">Get the army</a>
+      <a class="btn btn-primary" href="https://github.com/warbletech/warble-army">Get warble-flock</a>
       <a class="btn btn-ghost" href="#start">Easiest first PR</a>
     </div>
   </section>
@@ -341,8 +349,8 @@
     </article>
     <article class="card">
       <span class="tag tag-starling">CE</span>
-      <img src="assets/heron-ops-logo.jpg" alt="Starling EX Community" width="72" height="72" style="opacity:0.9" />
-      <h2>Starling EX Community</h2>
+      <img src="assets/heron-ops-logo.jpg" alt="Starling-EX Community" width="72" height="72" style="opacity:0.9" />
+      <h2>Starling-EX Community</h2>
       <p>Self-host package: Starling Lite facade + Heron Ops + ShrikeOps, one Helm chart. Planned CNCF donation under Warble stewardship today.</p>
       <p class="link-row"><a href="https://github.com/warbletech/warble-army/tree/main/charts/starling-ex-ce">charts/starling-ex-ce</a></p>
     </article>
@@ -373,20 +381,40 @@
       </article>
       <article class="card">
         <span class="tag tag-easy">Docs / site</span>
-        <h3>warbleoss.org · community</h3>
-        <p>Landing copy, install snags, Office Hours notes, RFCs. No cluster required.</p>
+        <img src="assets/logo-warbleoss.png" alt="WarbleOSS logo" width="72" height="72" />
+        <h3>warbleoss.org</h3>
+        <p>Landing copy and install docs for warble-flock (ShrikeOps, Heron Ops, Starling-EX Community). No cluster required.</p>
         <p class="link-row">
-          <a href="https://github.com/warbletech/warbleoss.org">warbleoss.org</a>
-          ·
-          <a href="https://github.com/warbletech/community">community</a>
+          <a href="https://github.com/warbletech/warbleoss.org">github.com/warbletech/warbleoss.org</a>
+        </p>
+      </article>
+      <article class="card">
+        <span class="tag tag-easy">Docs / site</span>
+        <img src="assets/logo-warble-community.png" alt="Warble Community logo" width="72" height="72" />
+        <h3>community</h3>
+        <p>Office Hours notes, working groups, and RFCs. No cluster required.</p>
+        <p class="link-row">
+          <a href="https://github.com/warbletech/community">github.com/warbletech/community</a>
         </p>
       </article>
       <article class="card">
         <span class="tag tag-platform">Local stack</span>
+        <img src="assets/warble-icon.png" alt="warble-bootstrap" width="72" height="72" />
         <h3>warble-bootstrap</h3>
-        <p>One-shot Rancher Desktop / k3s stack for local demos. Frakma-X (Linux Foundation wing) is forming separately — platform docs stay private until chartered.</p>
+        <p>Clones the warbletech org and keeps the list of where each platform runs. It does not install a cluster. No unique official mark yet, so the Warble icon stands in.</p>
         <p class="link-row">
           <a href="https://github.com/warbletech/warble-bootstrap">github.com/warbletech/warble-bootstrap</a>
+        </p>
+      </article>
+      <article class="card">
+        <span class="tag tag-platform">Conformance</span>
+        <img src="assets/logo-k8s-ai-conformance.png" alt="Kubernetes AI Conformance logo" width="72" height="72" />
+        <h3>k8s AI Conformance</h3>
+        <p>CNCF Kubernetes AI Conformance. Warble contributes upstream; <a href="https://github.com/cncf/k8s-ai-conformance/pull/131">PR #131</a> (HTTP 429 retry for evidence URL validation) merged on 29 October 2026.</p>
+        <p class="link-row">
+          <a href="https://github.com/cncf/k8s-ai-conformance">github.com/cncf/k8s-ai-conformance</a>
+          ·
+          <a href="https://github.com/warbletech/k8s-ai-conformance">warbletech fork</a>
         </p>
       </article>
     </div>
@@ -412,7 +440,7 @@
 
   <section class="block" id="install">
     <h2>Install Community Edition</h2>
-    <p class="lede">Self-host the flock on any CNCF-conformant cluster (kind, k3s, GKE, EKS, AKS).</p>
+    <p class="lede">Self-host the flock on any CNCF-conformant cluster (for example kind, k3s, or GKE).</p>
     <pre>git clone --recurse-submodules https://github.com/warbletech/warble-army.git
 cd warble-army
 
@@ -445,7 +473,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
       <thead>
         <tr>
           <th></th>
-          <th>Starling EX Community</th>
+          <th>warble-flock</th>
           <th>Frakma-X</th>
         </tr>
       </thead>
@@ -462,7 +490,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
         </tr>
         <tr>
           <td><strong>Today</strong></td>
-          <td>warbleoss.org + warble-army flock repos</td>
+          <td>warbleoss.org + warble-flock repos (GitHub: warble-army)</td>
           <td>Forming (private prep); commercial FRAKMA at frakma.io</td>
         </tr>
         <tr>
@@ -482,7 +510,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
   <section class="block" id="cncf">
     <h2>Path to CNCF</h2>
     <p class="lede">
-      We plan to propose the open flock (warble-army, Heron Ops, ShrikeOps) to the CNCF as a
+      We plan to propose the open flock — warble-flock (ShrikeOps, Heron Ops, Starling-EX Community) — to the CNCF as a
       <strong>Sandbox</strong> project. Warble Cloud is a Linux Foundation member and an
       <a href="https://aaif.io">Agentic AI Foundation (AAIF)</a> Silver member, the LF home of MCP,
       and a Core Tech Member of the AAIF working groups: Taxonomy &amp; Landscape; Observability &amp; Tracing (Agent State, Context, and Reasoning); Identity &amp; Trust; Governance, Risk &amp; Regulatory; and Agentic Commerce. AAIF Tech Speaker.
@@ -549,6 +577,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
         <p class="link-row"><a href="https://discord.gg/kAfR57mVDX">Join Discord</a></p>
       </article>
       <article class="card">
+        <img src="assets/logo-warble-community.png" alt="Warble Community logo" width="72" height="72" />
         <h3>RFCs · Working groups · Showcase</h3>
         <p>Propose changes, join agents / k8s / finops / devx WGs, or showcase what you built with the flock.</p>
         <p class="link-row"><a href="https://github.com/warbletech/community">github.com/warbletech/community</a></p>
@@ -590,7 +619,7 @@ curl -sS http://127.0.0.1:8822/health</pre>
       <article class="card">
         <h3>Sandbox path</h3>
         <p>
-          CNCF Sandbox checklist and application draft live under the army umbrella.
+          CNCF Sandbox checklist and application draft live under the warble-flock umbrella (repository: warble-army).
           Help by hardening CE install, adopters, and multi-org maintainership.
         </p>
         <p class="link-row">
